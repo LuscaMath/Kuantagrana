@@ -1,0 +1,292 @@
+@import url('https://fonts.bunny.net/css?family=nunito:400,600,700,800&family=silkscreen:400,700');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --vm-sky: #8ed0ff;
+        --vm-sky-soft: #d9f1ff;
+        --vm-grass: #7ccf7a;
+        --vm-leaf: #3f8f4b;
+        --vm-soil: #8c5a3c;
+        --vm-sand: #f5e2a8;
+        --vm-wood: #8f5f33;
+        --vm-panel: #fff8dd;
+        --vm-panel-strong: #ffe8a3;
+        --vm-border: #3d2b1f;
+        --vm-text: #2f241d;
+        --vm-accent: #f0b429;
+        --vm-accent-strong: #d48912;
+        --vm-danger: #df6b57;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        min-height: 100vh;
+        background: linear-gradient(180deg, var(--vm-sky) 0%, var(--vm-sky-soft) 42%, #dff5c8 42%, #dff5c8 100%);
+        color: var(--vm-text);
+        font-family: 'Nunito', sans-serif;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: 'Silkscreen', cursive;
+        letter-spacing: 0.04em;
+    }
+}
+
+@layer components {
+    .pixel-card {
+        @apply rounded-none border-4 p-4 shadow-none sm:p-6;
+        border-color: var(--vm-border);
+        background-color: var(--vm-panel);
+        box-shadow: 8px 8px 0 0 rgba(61, 43, 31, 0.95);
+    }
+
+    .pixel-card-soft {
+        @apply rounded-none border-4;
+        border-color: var(--vm-border);
+        background-color: rgba(255, 248, 221, 0.85);
+        box-shadow: 6px 6px 0 0 rgba(61, 43, 31, 0.85);
+    }
+
+    .pixel-input {
+        @apply mt-1 block w-full rounded-none border-4 px-4 py-3 text-sm shadow-none outline-none transition;
+        border-color: var(--vm-border);
+        background-color: #fffdf2;
+    }
+
+    .pixel-input:focus {
+        border-color: var(--vm-accent-strong);
+        box-shadow: 0 0 0 3px rgba(240, 180, 41, 0.25);
+    }
+
+    .pixel-btn {
+        @apply inline-flex items-center justify-center rounded-none border-4 px-4 py-3 text-[11px] font-extrabold uppercase tracking-[0.16em] transition sm:px-5 sm:text-xs sm:tracking-[0.2em];
+        border-color: var(--vm-border);
+        background-color: var(--vm-accent);
+        color: var(--vm-border);
+        box-shadow: 4px 4px 0 0 rgba(61, 43, 31, 0.95);
+    }
+
+    .pixel-btn:hover {
+        transform: translate(-1px, -1px);
+        box-shadow: 6px 6px 0 0 rgba(61, 43, 31, 0.95);
+    }
+
+    .pixel-btn:active {
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0 0 rgba(61, 43, 31, 0.95);
+    }
+
+    .pixel-link {
+        @apply text-sm font-bold underline decoration-2 underline-offset-4 transition;
+        color: var(--vm-wood);
+    }
+
+    .pixel-link:hover {
+        color: var(--vm-accent-strong);
+    }
+
+    .pixel-badge {
+        @apply inline-flex items-center rounded-none border-4 px-3 py-2 text-[10px] font-extrabold uppercase tracking-[0.2em];
+        border-color: var(--vm-border);
+        background-color: var(--vm-panel-strong);
+    }
+
+    .pixel-scene {
+        background:
+            radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.6) 0 10%, transparent 11%),
+            radial-gradient(circle at 80% 16%, rgba(255, 255, 255, 0.45) 0 8%, transparent 9%),
+            linear-gradient(180deg, transparent 0 68%, #8c5a3c 68% 72%, #7ccf7a 72% 100%);
+    }
+
+    .pixel-grid {
+        background-image:
+            linear-gradient(rgba(61, 43, 31, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(61, 43, 31, 0.08) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+
+    .environment-card {
+        @apply relative overflow-hidden;
+    }
+
+    .environment-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0.28;
+        pointer-events: none;
+    }
+
+    .environment-card > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .environment-card .pixel-badge {
+        background-color: rgba(255, 248, 221, 0.96);
+    }
+
+    .environment-scene {
+        @apply relative mt-5 overflow-hidden border-4;
+        min-height: 120px;
+        border-color: var(--vm-border);
+        background-color: rgba(255, 253, 242, 0.92);
+        box-shadow: inset 0 -6px 0 rgba(61, 43, 31, 0.18);
+    }
+
+    .environment-scene::before,
+    .environment-scene::after {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+    }
+
+    .environment-scene::before {
+        inset: 0;
+        opacity: 0.95;
+    }
+
+    .environment-scene::after {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 28px;
+        background: rgba(61, 43, 31, 0.16);
+    }
+
+    .environment-scene-label {
+        @apply absolute left-3 top-3 inline-flex border-2 px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.16em];
+        border-color: var(--vm-border);
+        background-color: rgba(255, 248, 221, 0.94);
+    }
+
+    .environment-scene-caption {
+        @apply absolute bottom-3 left-3 right-3 text-xs font-extrabold uppercase tracking-[0.14em];
+    }
+
+    .environment-stat {
+        @apply border-4 p-3;
+        border-color: var(--vm-border);
+        background-color: rgba(255, 253, 242, 0.9);
+    }
+
+    .environment-panel {
+        @apply border-4 p-3;
+        border-color: var(--vm-border);
+        background-color: rgba(255, 253, 242, 0.9);
+    }
+
+    .environment-theme-home {
+        background-color: #fff0d8;
+        box-shadow: 8px 8px 0 0 rgba(111, 70, 34, 0.95);
+    }
+
+    .environment-theme-home::before {
+        background:
+            radial-gradient(circle at 18% 20%, rgba(255, 228, 171, 0.85) 0 12%, transparent 13%),
+            linear-gradient(180deg, rgba(255, 243, 214, 0.75) 0 45%, transparent 45% 100%),
+            linear-gradient(180deg, transparent 0 62%, #ad7347 62% 74%, #79c06d 74% 100%);
+    }
+
+    .environment-theme-home .environment-scene::before {
+        background:
+            linear-gradient(180deg, #ffd786 0 16%, transparent 16% 100%),
+            linear-gradient(180deg, transparent 0 58%, #9e6540 58% 68%, #75bf74 68% 100%),
+            linear-gradient(90deg, transparent 0 14%, #d58d56 14% 42%, transparent 42% 48%, #d58d56 48% 76%, transparent 76% 100%),
+            linear-gradient(180deg, transparent 0 26%, #8c5132 26% 58%, transparent 58% 100%);
+    }
+
+    .environment-theme-school {
+        background-color: #eff7ff;
+        box-shadow: 8px 8px 0 0 rgba(53, 82, 126, 0.92);
+    }
+
+    .environment-theme-school::before {
+        background:
+            repeating-linear-gradient(180deg, rgba(101, 158, 231, 0.18) 0 22px, transparent 22px 44px),
+            linear-gradient(90deg, rgba(240, 180, 41, 0.28) 0 8px, transparent 8px 100%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.72) 0 100%);
+    }
+
+    .environment-theme-school .environment-scene::before {
+        background:
+            linear-gradient(180deg, #8ecaf5 0 18%, transparent 18% 100%),
+            repeating-linear-gradient(180deg, transparent 0 23px, rgba(77, 129, 206, 0.26) 23px 25px),
+            linear-gradient(90deg, rgba(240, 180, 41, 0.45) 0 8px, transparent 8px 100%),
+            linear-gradient(180deg, transparent 0 72%, #dfe9c9 72% 100%);
+    }
+
+    .environment-theme-market {
+        background-color: #fff3cf;
+        box-shadow: 8px 8px 0 0 rgba(135, 96, 21, 0.95);
+    }
+
+    .environment-theme-market::before {
+        background:
+            repeating-linear-gradient(90deg, rgba(104, 184, 91, 0.18) 0 30px, transparent 30px 60px),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0 52%, transparent 52% 100%),
+            linear-gradient(180deg, transparent 0 64%, #9f6d2d 64% 75%, #f0d18e 75% 100%);
+    }
+
+    .environment-theme-market .environment-scene::before {
+        background:
+            linear-gradient(180deg, #ffd66b 0 16%, transparent 16% 100%),
+            repeating-linear-gradient(90deg, transparent 0 18%, rgba(126, 186, 88, 0.85) 18% 20%, transparent 20% 44%),
+            linear-gradient(180deg, transparent 0 48%, #76af57 48% 56%, transparent 56% 62%, #76af57 62% 70%, transparent 70% 100%),
+            linear-gradient(180deg, transparent 0 72%, #d1a563 72% 100%);
+    }
+
+    .environment-theme-pharmacy {
+        background-color: #e8fbf5;
+        box-shadow: 8px 8px 0 0 rgba(43, 109, 92, 0.9);
+    }
+
+    .environment-theme-pharmacy::before {
+        background:
+            linear-gradient(180deg, rgba(193, 246, 231, 0.65) 0 100%),
+            radial-gradient(circle at 76% 20%, rgba(255, 255, 255, 0.82) 0 12%, transparent 13%);
+    }
+
+    .environment-theme-pharmacy .environment-scene::before {
+        background:
+            linear-gradient(180deg, #9fe8d5 0 18%, transparent 18% 100%),
+            linear-gradient(90deg, transparent 0 28%, rgba(255, 255, 255, 0.92) 28% 36%, transparent 36% 100%),
+            linear-gradient(180deg, transparent 0 28%, rgba(255, 255, 255, 0.92) 28% 40%, transparent 40% 100%),
+            linear-gradient(180deg, transparent 0 74%, #c7f0e5 74% 100%);
+    }
+
+    .environment-theme-park {
+        background-color: #fff0d4;
+        box-shadow: 8px 8px 0 0 rgba(125, 54, 40, 0.92);
+    }
+
+    .environment-theme-park::before {
+        background:
+            radial-gradient(circle at 18% 20%, rgba(240, 180, 41, 0.7) 0 8%, transparent 9%),
+            radial-gradient(circle at 80% 18%, rgba(223, 107, 87, 0.6) 0 8%, transparent 9%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0 56%, transparent 56% 100%),
+            linear-gradient(180deg, transparent 0 64%, #8c5a3c 64% 74%, #7ccf7a 74% 100%);
+    }
+
+    .environment-theme-park .environment-scene::before {
+        background:
+            radial-gradient(circle at 14% 18%, rgba(240, 180, 41, 0.82) 0 7%, transparent 8%),
+            radial-gradient(circle at 30% 28%, rgba(223, 107, 87, 0.75) 0 6%, transparent 7%),
+            radial-gradient(circle at 48% 18%, rgba(124, 207, 122, 0.82) 0 6%, transparent 7%),
+            linear-gradient(180deg, #ffe69c 0 18%, transparent 18% 100%),
+            linear-gradient(180deg, transparent 0 52%, #ca7d4f 52% 60%, transparent 60% 66%, #ca7d4f 66% 74%, transparent 74% 100%),
+            linear-gradient(180deg, transparent 0 74%, #7dcf79 74% 100%);
+    }
+}
