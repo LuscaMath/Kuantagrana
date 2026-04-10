@@ -33,15 +33,20 @@ class HouseholdItemController extends Controller
 
     public function create(Request $request): View
     {
+        $selectedEnvironmentId = $request->integer('environment_id') ?: null;
+
         return view('household-items.create', [
             'item' => new HouseholdItem([
                 'unit' => 'un',
                 'quantity' => 0,
                 'minimum_quantity' => 0,
                 'is_active' => true,
-                'environment_id' => $request->integer('environment_id') ?: null,
+                'environment_id' => $selectedEnvironmentId,
             ]),
             'environments' => Environment::query()->where('is_active', true)->orderBy('display_order')->get(),
+            'selectedEnvironment' => $selectedEnvironmentId
+                ? Environment::query()->whereKey($selectedEnvironmentId)->first()
+                : null,
         ]);
     }
 
@@ -61,6 +66,7 @@ class HouseholdItemController extends Controller
         return view('household-items.edit', [
             'item' => $householdItem,
             'environments' => Environment::query()->where('is_active', true)->orderBy('display_order')->get(),
+            'selectedEnvironment' => $householdItem->environment,
         ]);
     }
 

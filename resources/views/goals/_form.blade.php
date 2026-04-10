@@ -1,6 +1,47 @@
-<div>
-    <x-input-label for="title" value="Título da meta" />
-    <x-text-input id="title" name="title" type="text" :value="old('title', $goal->title)" required />
+@php
+    $contextEnvironment = $selectedEnvironment ?? null;
+
+    $goalContext = match ($contextEnvironment?->slug) {
+        'parque-de-diversoes' => [
+            'title' => 'Planeje uma meta do seu parque',
+            'description' => 'O Parque e o melhor lugar para metas, sonhos, recompensas e objetivos que representam sua evolucao.',
+            'title_placeholder' => 'Ex.: Viagem de fim de ano',
+            'description_placeholder' => 'Ex.: Quero juntar esse valor aos poucos e acompanhar meu progresso.',
+        ],
+        'escola' => [
+            'title' => 'Planejamento com foco em aprendizado',
+            'description' => 'Na Escola, metas funcionam melhor quando estao ligadas a estudo, organizacao, reserva e educacao financeira.',
+            'title_placeholder' => 'Ex.: Reserva para curso',
+            'description_placeholder' => 'Ex.: Guardar valor para materiais, curso ou estudo.',
+        ],
+        'casa' => [
+            'title' => 'Meta da rotina da casa',
+            'description' => 'Use metas da Casa para organizar despesas maiores, emergencias domesticas ou reposicoes importantes.',
+            'title_placeholder' => 'Ex.: Reserva para manutencao',
+            'description_placeholder' => 'Ex.: Valor para imprevistos da casa.',
+        ],
+        default => [
+            'title' => 'Meta financeira',
+            'description' => 'Defina um objetivo claro, com valor e prazo, para acompanhar seu progresso no sistema.',
+            'title_placeholder' => 'Ex.: Comprar notebook',
+            'description_placeholder' => 'Ex.: Juntar aos poucos para atingir esse objetivo.',
+        ],
+    };
+@endphp
+
+@if ($contextEnvironment)
+    <div class="border-4 p-4 text-sm font-bold" style="border-color: var(--vm-border); background-color: #fffdf2;">
+        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">{{ $goalContext['title'] }}</p>
+        <p class="mt-2">{{ $goalContext['description'] }}</p>
+        <p class="mt-3 text-xs font-extrabold uppercase tracking-[0.14em]">
+            Ambiente atual: {{ $contextEnvironment->name }}
+        </p>
+    </div>
+@endif
+
+<div class="{{ $contextEnvironment ? 'mt-4' : '' }}">
+    <x-input-label for="title" value="Titulo da meta" />
+    <x-text-input id="title" name="title" type="text" :value="old('title', $goal->title)" placeholder="{{ $goalContext['title_placeholder'] }}" required />
     <x-input-error :messages="$errors->get('title')" class="mt-2 text-sm font-bold text-[color:var(--vm-danger)]" />
 </div>
 
@@ -11,15 +52,24 @@
 </div>
 
 <div class="mt-4">
-    <x-input-label for="environment_id" value="Ambiente" />
-    <select id="environment_id" name="environment_id" class="pixel-input">
-        <option value="">Selecione um ambiente</option>
-        @foreach ($environments as $environment)
-            <option value="{{ $environment->id }}" @selected((string) old('environment_id', $goal->environment_id) === (string) $environment->id)>
-                {{ $environment->name }}
-            </option>
-        @endforeach
-    </select>
+    @if ($contextEnvironment)
+        <input type="hidden" name="environment_id" value="{{ $contextEnvironment->id }}">
+        <x-input-label for="environment_locked" value="Ambiente" />
+        <div id="environment_locked" class="pixel-input flex items-center justify-between gap-3">
+            <span>{{ $contextEnvironment->name }}</span>
+            <span class="text-xs font-extrabold uppercase tracking-[0.14em] text-[color:var(--vm-wood)]">Definido pelo mapa</span>
+        </div>
+    @else
+        <x-input-label for="environment_id" value="Ambiente" />
+        <select id="environment_id" name="environment_id" class="pixel-input">
+            <option value="">Selecione um ambiente</option>
+            @foreach ($environments as $environment)
+                <option value="{{ $environment->id }}" @selected((string) old('environment_id', $goal->environment_id) === (string) $environment->id)>
+                    {{ $environment->name }}
+                </option>
+            @endforeach
+        </select>
+    @endif
     <x-input-error :messages="$errors->get('environment_id')" class="mt-2 text-sm font-bold text-[color:var(--vm-danger)]" />
 </div>
 
@@ -41,14 +91,14 @@
     <x-input-label for="status" value="Status" />
     <select id="status" name="status" class="pixel-input">
         <option value="active" @selected(old('status', $goal->status) === 'active')>Ativa</option>
-        <option value="completed" @selected(old('status', $goal->status) === 'completed')>Concluída</option>
+        <option value="completed" @selected(old('status', $goal->status) === 'completed')>Concluida</option>
         <option value="cancelled" @selected(old('status', $goal->status) === 'cancelled')>Cancelada</option>
     </select>
     <x-input-error :messages="$errors->get('status')" class="mt-2 text-sm font-bold text-[color:var(--vm-danger)]" />
 </div>
 
 <div class="mt-4">
-    <x-input-label for="description" value="Descrição" />
-    <textarea id="description" name="description" rows="4" class="pixel-input">{{ old('description', $goal->description) }}</textarea>
+    <x-input-label for="description" value="Descricao" />
+    <textarea id="description" name="description" rows="4" class="pixel-input" placeholder="{{ $goalContext['description_placeholder'] }}">{{ old('description', $goal->description) }}</textarea>
     <x-input-error :messages="$errors->get('description')" class="mt-2 text-sm font-bold text-[color:var(--vm-danger)]" />
 </div>

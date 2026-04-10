@@ -1,8 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
         <div>
-            <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[color:var(--vm-wood)]">Organização da casa</p>
-            <h2 class="text-lg leading-relaxed sm:text-2xl">Novo item doméstico</h2>
+            <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[color:var(--vm-wood)]">
+                {{ $selectedEnvironment?->name ?? 'Organizacao da rotina' }}
+            </p>
+            <h2 class="text-lg leading-relaxed sm:text-2xl">
+                {{ $selectedEnvironment ? 'Novo item em ' . $selectedEnvironment->name : 'Novo item da rotina' }}
+            </h2>
         </div>
     </x-slot>
 

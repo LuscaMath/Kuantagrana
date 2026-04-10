@@ -37,16 +37,21 @@ class FinancialTransactionController extends Controller
 
     public function create(Request $request): View
     {
+        $selectedEnvironmentId = $request->integer('environment_id') ?: null;
+
         return view('financial-transactions.create', [
             'transaction' => new FinancialTransaction([
                 'type' => 'expense',
                 'transaction_date' => now()->toDateString(),
                 'is_completed' => true,
                 'is_recurring' => false,
-                'environment_id' => $request->integer('environment_id') ?: null,
+                'environment_id' => $selectedEnvironmentId,
             ]),
             'categories' => Category::query()->where('is_active', true)->orderBy('type')->orderBy('name')->get(),
             'environments' => Environment::query()->where('is_active', true)->orderBy('display_order')->get(),
+            'selectedEnvironment' => $selectedEnvironmentId
+                ? Environment::query()->whereKey($selectedEnvironmentId)->first()
+                : null,
         ]);
     }
 
@@ -67,6 +72,7 @@ class FinancialTransactionController extends Controller
             'transaction' => $financialTransaction,
             'categories' => Category::query()->where('is_active', true)->orderBy('type')->orderBy('name')->get(),
             'environments' => Environment::query()->where('is_active', true)->orderBy('display_order')->get(),
+            'selectedEnvironment' => $financialTransaction->environment,
         ]);
     }
 

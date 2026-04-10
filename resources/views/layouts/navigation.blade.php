@@ -28,9 +28,6 @@
                         Metas
                     </x-nav-link>
 
-                    <x-nav-link :href="route('household-items.index')" :active="request()->routeIs('household-items.*')">
-                        Itens
-                    </x-nav-link>
                 </div>
             </div>
 
@@ -99,9 +96,6 @@
                 Metas
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('household-items.index')" :active="request()->routeIs('household-items.*')">
-                Itens
-            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->

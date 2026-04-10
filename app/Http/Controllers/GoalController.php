@@ -34,13 +34,18 @@ class GoalController extends Controller
 
     public function create(Request $request): View
     {
+        $selectedEnvironmentId = $request->integer('environment_id') ?: null;
+
         return view('goals.create', [
             'goal' => new Goal([
                 'status' => 'active',
                 'start_date' => now()->toDateString(),
-                'environment_id' => $request->integer('environment_id') ?: null,
+                'environment_id' => $selectedEnvironmentId,
             ]),
             'environments' => Environment::query()->where('is_active', true)->orderBy('display_order')->get(),
+            'selectedEnvironment' => $selectedEnvironmentId
+                ? Environment::query()->whereKey($selectedEnvironmentId)->first()
+                : null,
         ]);
     }
 
@@ -60,6 +65,7 @@ class GoalController extends Controller
         return view('goals.edit', [
             'goal' => $goal->load('contributions'),
             'environments' => Environment::query()->where('is_active', true)->orderBy('display_order')->get(),
+            'selectedEnvironment' => $goal->environment,
         ]);
     }
 

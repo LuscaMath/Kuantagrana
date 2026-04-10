@@ -1,8 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
         <div>
-            <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[color:var(--vm-wood)]">Controle financeiro</p>
-            <h2 class="text-lg leading-relaxed sm:text-2xl">Nova transação</h2>
+            <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[color:var(--vm-wood)]">
+                {{ $selectedEnvironment?->name ?? 'Controle financeiro' }}
+            </p>
+            <h2 class="text-lg leading-relaxed sm:text-2xl">
+                {{ $selectedEnvironment ? 'Nova transacao em ' . $selectedEnvironment->name : 'Nova transacao' }}
+            </h2>
         </div>
     </x-slot>
 
@@ -20,7 +24,7 @@
                         </a>
 
                         <x-primary-button class="w-full sm:w-auto">
-                            Salvar transação
+                            Salvar transacao
                         </x-primary-button>
                     </div>
                 </form>
