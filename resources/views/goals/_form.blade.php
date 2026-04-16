@@ -8,21 +8,9 @@
             'title_placeholder' => 'Ex.: Viagem de fim de ano',
             'description_placeholder' => 'Ex.: Quero juntar esse valor aos poucos e acompanhar meu progresso.',
         ],
-        'escola' => [
-            'title' => 'Planejamento com foco em aprendizado',
-            'description' => 'Na Escola, metas funcionam melhor quando estao ligadas a estudo, organizacao, reserva e educacao financeira.',
-            'title_placeholder' => 'Ex.: Reserva para curso',
-            'description_placeholder' => 'Ex.: Guardar valor para materiais, curso ou estudo.',
-        ],
-        'casa' => [
-            'title' => 'Meta da rotina da casa',
-            'description' => 'Use metas da Casa para organizar despesas maiores, emergencias domesticas ou reposicoes importantes.',
-            'title_placeholder' => 'Ex.: Reserva para manutencao',
-            'description_placeholder' => 'Ex.: Valor para imprevistos da casa.',
-        ],
         default => [
             'title' => 'Meta financeira',
-            'description' => 'Defina um objetivo claro, com valor e prazo, para acompanhar seu progresso no sistema.',
+            'description' => 'As metas vivem no Parque de Diversoes, onde voce acompanha o progresso e as recompensas.',
             'title_placeholder' => 'Ex.: Comprar notebook',
             'description_placeholder' => 'Ex.: Juntar aos poucos para atingir esse objetivo.',
         ],

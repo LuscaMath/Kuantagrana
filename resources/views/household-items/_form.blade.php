@@ -25,7 +25,7 @@
         ],
         default => [
             'title' => 'Item de apoio da rotina',
-            'description' => 'Cadastre um item importante para sua organizacao e associe ao ambiente que melhor representa esse contexto.',
+            'description' => 'Cadastre um item importante e associe a Casa, Mercado ou Farmacia.',
             'name_label' => 'Nome do item',
             'name_placeholder' => 'Ex.: Papel higienico',
             'notes_placeholder' => 'Ex.: Observacoes que ajudem no controle.',

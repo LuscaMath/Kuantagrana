@@ -6,11 +6,11 @@
 
     $transactionContext = match ($contextEnvironment?->slug) {
         'casa' => [
-            'title' => 'Registro da rotina da casa',
-            'description' => 'Use este formulario para contas fixas e gastos do lar, como agua, luz, aluguel, internet e reposicoes da casa.',
-            'title_label' => 'Conta ou gasto',
-            'title_placeholder' => 'Ex.: Conta de luz',
-            'description_placeholder' => 'Ex.: Pagamento referente ao mes atual.',
+            'title' => 'Registro da base financeira',
+            'description' => 'Na Casa voce registra receitas e despesas da rotina principal, como salario, ajuda familiar, aluguel, luz, agua e internet.',
+            'title_label' => 'Receita ou despesa',
+            'title_placeholder' => 'Ex.: Salario do mes',
+            'description_placeholder' => 'Ex.: Valor recebido ou conta da rotina principal.',
         ],
         'mercado' => [
             'title' => 'Registro de compras do mercado',
@@ -26,23 +26,9 @@
             'title_placeholder' => 'Ex.: Remedio para gripe',
             'description_placeholder' => 'Ex.: Medicamentos e itens de higiene.',
         ],
-        'escola' => [
-            'title' => 'Registro ligado a educacao financeira',
-            'description' => 'Na Escola, priorize registros que ajudem no planejamento, como cursos, materiais de estudo ou gastos que sirvam de exemplo para aprendizado.',
-            'title_label' => 'Registro de apoio',
-            'title_placeholder' => 'Ex.: Material de estudo',
-            'description_placeholder' => 'Ex.: Gasto usado para planejamento e aprendizado.',
-        ],
-        'parque-de-diversoes' => [
-            'title' => 'Registro ligado aos seus objetivos',
-            'description' => 'Quando vier do Parque, use este formulario para registrar movimentacoes que apoiem metas, lazer planejado ou progresso financeiro.',
-            'title_label' => 'Movimentacao',
-            'title_placeholder' => 'Ex.: Aporte para meta',
-            'description_placeholder' => 'Ex.: Valor separado para um objetivo especifico.',
-        ],
         default => [
             'title' => 'Registro financeiro',
-            'description' => 'Preencha os dados da sua movimentacao e escolha o ambiente que melhor representa esse contexto.',
+            'description' => 'Escolha entre Casa, Mercado ou Farmacia para registrar no contexto certo.',
             'title_label' => 'Titulo',
             'title_placeholder' => 'Ex.: Conta de internet',
             'description_placeholder' => 'Ex.: Detalhes que ajudem voce a lembrar desse registro.',
@@ -61,11 +47,20 @@
 @endif
 
 <div class="{{ $contextEnvironment ? 'mt-4' : '' }}">
-    <x-input-label for="type" value="Tipo" />
-    <select id="type" name="type" class="pixel-input">
-        <option value="income" @selected($selectedType === 'income')>Receita</option>
-        <option value="expense" @selected($selectedType === 'expense')>Despesa</option>
-    </select>
+    @if ($contextEnvironment && $contextEnvironment->slug !== 'casa')
+        <input type="hidden" id="type" name="type" value="expense">
+        <x-input-label for="type_locked" value="Tipo" />
+        <div id="type_locked" class="pixel-input flex items-center justify-between gap-3">
+            <span>Despesa</span>
+            <span class="text-xs font-extrabold uppercase tracking-[0.14em] text-[color:var(--vm-wood)]">Definido pelo ambiente</span>
+        </div>
+    @else
+        <x-input-label for="type" value="Tipo" />
+        <select id="type" name="type" class="pixel-input">
+            <option value="income" @selected($selectedType === 'income')>Receita</option>
+            <option value="expense" @selected($selectedType === 'expense')>Despesa</option>
+        </select>
+    @endif
     <x-input-error :messages="$errors->get('type')" class="mt-2 text-sm font-bold text-[color:var(--vm-danger)]" />
 </div>
 

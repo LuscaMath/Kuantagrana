@@ -6,7 +6,7 @@
                 <h2 class="text-lg leading-relaxed sm:text-2xl">{{ $environment->name }}</h2>
             </div>
 
-            <a href="{{ route('environments.index') }}" class="pixel-btn w-full sm:w-auto" style="background-color: var(--vm-panel);">
+            <a href="{{ route('environments.index') }}" class="pixel-btn pixel-btn-secondary w-full sm:w-auto">
                 Voltar ao mapa
             </a>
         </div>
@@ -29,98 +29,106 @@
                     </div>
 
                     <h3 class="mt-4 text-lg leading-relaxed sm:text-2xl">{{ $highlights['title'] }}</h3>
-                    <p class="mt-4 max-w-2xl text-sm font-bold leading-6 sm:text-base sm:leading-7">{{ $highlights['description'] }}</p>
-
-                    <div class="mt-5 flex flex-wrap gap-2">
-                        @foreach ($highlights['focus'] as $focus)
-                            <span class="border-2 px-2 py-1 text-xs font-extrabold uppercase tracking-[0.14em]" style="border-color: var(--vm-border); background-color: rgba(255, 253, 242, 0.88);">
-                                {{ $focus }}
-                            </span>
-                        @endforeach
-                    </div>
+                    <p class="mt-3 max-w-2xl text-sm font-bold leading-6 sm:text-base sm:leading-7">{{ $highlights['description'] }}</p>
                 </div>
 
-                <div class="pixel-card environment-card {{ $theme['card_class'] }}">
+                <div class="pixel-card-quiet environment-card {{ $theme['card_class'] }}">
+                    <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Acoes principais</p>
+
                     @if ($highlights['kind'] === 'educational')
-                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Trilha da escola</p>
-                        <h3 class="mt-3 text-lg leading-relaxed">Aprender antes de gastar</h3>
-                        <p class="mt-3 text-sm font-bold leading-6">
-                            A Escola e a area de educacao financeira do sistema. Aqui o foco principal e orientar, explicar conceitos e
-                            incentivar planejamento com dicas praticas do dia a dia.
-                        </p>
-
-                        <div class="mt-4 space-y-3 text-sm font-bold">
-                            <div class="environment-panel">
-                                Monte sua base com dicas de organizacao, poupanca e uso consciente do dinheiro.
-                            </div>
-                            <div class="environment-panel">
-                                Use metas e desafios como apoio, mas veja a Escola como o lugar para entender o porque de cada escolha.
-                            </div>
+                        <div class="mt-4 space-y-3">
+                            <a href="#dicas" class="pixel-btn w-full">
+                                Ver dicas
+                            </a>
                         </div>
-
-                        <a href="#dicas" class="pixel-btn mt-4 w-full">
-                            Ver dicas financeiras
-                        </a>
-                        <a href="{{ $actionLinks['goals'] }}" class="pixel-btn mt-3 w-full" style="background-color: var(--vm-panel);">
-                            Ver planejamento e metas
-                        </a>
                     @elseif ($highlights['kind'] === 'gamified')
-                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Area principal</p>
-                        <h3 class="mt-3 text-lg leading-relaxed">Seu espaco de recompensa</h3>
-                        <p class="mt-3 text-sm font-bold leading-6">
-                            O Parque de Diversoes concentra metas, desafios e a sensacao de progresso. E o lugar para acompanhar sua
-                            evolucao e transformar disciplina em conquista.
-                        </p>
-
-                        <a href="{{ $actionLinks['goals'] }}" class="pixel-btn mt-4 w-full">
-                            Ver metas do ambiente
-                        </a>
-                        <a href="{{ $actionLinks['goals_create'] }}" class="pixel-btn mt-3 w-full" style="background-color: var(--vm-panel);">
-                            Criar nova meta
-                        </a>
-                        <a href="{{ route('dashboard') }}" class="pixel-btn mt-3 w-full">
-                            Ver painel de progresso
-                        </a>
+                        <div class="mt-4 space-y-3">
+                            <a href="{{ $actionLinks['goals'] }}" class="pixel-btn w-full">
+                                Ver metas
+                            </a>
+                            <a href="{{ $actionLinks['goals_create'] }}" class="pixel-btn pixel-btn-secondary w-full">
+                                Criar meta
+                            </a>
+                            <a href="{{ route('dashboard') }}" class="pixel-btn pixel-btn-secondary w-full">
+                                Ver painel
+                            </a>
+                        </div>
                     @else
-                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Acoes rapidas</p>
-                        <h3 class="mt-3 text-lg leading-relaxed">Organize este ambiente</h3>
-                        <p class="mt-3 text-sm font-bold leading-6">
-                            Use este espaco para registrar o que faz parte da sua rotina neste contexto e acompanhar como isso afeta sua vida financeira.
-                        </p>
-
-                        <a href="{{ $actionLinks['transactions'] }}" class="pixel-btn mt-4 w-full">
-                            Ver transacoes do ambiente
-                        </a>
-                        <a href="{{ $actionLinks['transactions_create'] }}" class="pixel-btn mt-3 w-full" style="background-color: var(--vm-panel);">
-                            Nova transacao aqui
-                        </a>
-                        <a href="{{ $actionLinks['items'] }}" class="pixel-btn mt-3 w-full">
-                            Ver itens do ambiente
-                        </a>
+                        <div class="mt-4 space-y-3">
+                            <a href="{{ $actionLinks['transactions'] }}" class="pixel-btn w-full">
+                                Ver transacoes
+                            </a>
+                            <a href="{{ $actionLinks['transactions_create'] }}" class="pixel-btn pixel-btn-secondary w-full">
+                                Nova transacao
+                            </a>
+                            @if ($supportsItems)
+                                <a href="{{ $actionLinks['items'] }}" class="pixel-btn pixel-btn-secondary w-full">
+                                    Ver itens
+                                </a>
+                            @endif
+                        </div>
                     @endif
                 </div>
             </section>
 
-            <section class="grid gap-4 md:grid-cols-3">
-                <div class="pixel-card environment-card {{ $theme['card_class'] }}">
-                    <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Receitas</p>
-                    <p class="mt-3 text-2xl font-extrabold">R$ {{ number_format($summary['income_total'], 2, ',', '.') }}</p>
-                </div>
-                <div class="pixel-card environment-card {{ $theme['card_class'] }}">
-                    <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Despesas</p>
-                    <p class="mt-3 text-2xl font-extrabold">R$ {{ number_format($summary['expense_total'], 2, ',', '.') }}</p>
-                </div>
-                <div class="pixel-card environment-card {{ $theme['card_class'] }}">
-                    <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Metas</p>
-                    <p class="mt-3 text-2xl font-extrabold">{{ $summary['goals_count'] }}</p>
-                </div>
-            </section>
+            @if ($highlights['kind'] === 'gamified')
+                <section class="grid gap-4 md:grid-cols-3">
+                    <div class="pixel-stat">
+                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Metas</p>
+                        <p class="mt-2 text-2xl font-extrabold">{{ $summary['goals_count'] }}</p>
+                    </div>
+                    <div class="pixel-stat">
+                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Concluidas</p>
+                        <p class="mt-2 text-2xl font-extrabold">{{ $summary['goals_completed'] }}</p>
+                    </div>
+                    <div class="pixel-stat">
+                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Em andamento</p>
+                        <p class="mt-2 text-2xl font-extrabold">{{ max(0, $summary['goals_count'] - $summary['goals_completed']) }}</p>
+                    </div>
+                </section>
+            @elseif ($highlights['kind'] === 'educational')
+                <section class="grid gap-4 md:grid-cols-3">
+                    <div class="pixel-stat">
+                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Dicas</p>
+                        <p class="mt-2 text-2xl font-extrabold">{{ $tips->count() }}</p>
+                    </div>
+                    <div class="pixel-stat">
+                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Desafios</p>
+                        <p class="mt-2 text-2xl font-extrabold">{{ $challenges->count() }}</p>
+                    </div>
+                    <div class="pixel-stat">
+                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Foco</p>
+                        <p class="mt-2 text-sm font-extrabold">Aprender antes de agir</p>
+                    </div>
+                </section>
+            @else
+                <section class="grid gap-4 md:grid-cols-3">
+                    <div class="pixel-stat">
+                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Receitas</p>
+                        <p class="mt-2 text-2xl font-extrabold">R$ {{ number_format($summary['income_total'], 2, ',', '.') }}</p>
+                    </div>
+                    <div class="pixel-stat">
+                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Despesas</p>
+                        <p class="mt-2 text-2xl font-extrabold">R$ {{ number_format($summary['expense_total'], 2, ',', '.') }}</p>
+                    </div>
+                    <div class="pixel-stat">
+                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">
+                            {{ $highlights['kind'] === 'home' ? 'Itens da casa' : 'Itens do ambiente' }}
+                        </p>
+                        <p class="mt-2 text-2xl font-extrabold">{{ $summary['items_count'] }}</p>
+                    </div>
+                </section>
+            @endif
 
             @if ($highlights['kind'] === 'educational')
                 <section class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
                     <div id="dicas" class="pixel-card environment-card {{ $theme['card_class'] }}">
-                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Conteudo educativo</p>
-                        <h3 class="mt-3 text-lg leading-relaxed">Dicas para tomar decisoes melhores</h3>
+                        <div class="flex items-center justify-between gap-3">
+                            <div>
+                                <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Conteudo educativo</p>
+                                <h3 class="mt-2 text-lg leading-relaxed">Dicas do ambiente</h3>
+                            </div>
+                        </div>
 
                         <div class="mt-4 space-y-3">
                             @forelse ($tips as $tip)
@@ -137,23 +145,23 @@
                     </div>
 
                     <div class="space-y-6">
-                        <div class="pixel-card environment-card {{ $theme['card_class'] }}">
-                            <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Ideias para estudar aqui</p>
-                            <div class="mt-4 space-y-3 text-sm font-bold">
-                                <div class="environment-panel">
-                                    Entender a diferenca entre gasto essencial e gasto impulsivo.
-                                </div>
-                                <div class="environment-panel">
-                                    Aprender a planejar metas antes de assumir novas despesas.
-                                </div>
-                                <div class="environment-panel">
-                                    Revisar desafios e conquistas como forma de motivacao, nao como fim em si.
-                                </div>
+                        <div class="pixel-card-quiet environment-card {{ $theme['card_class'] }}">
+                            <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Foco do ambiente</p>
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                @foreach ($highlights['focus'] as $focus)
+                                    <span class="border-2 px-2 py-1 text-xs font-extrabold uppercase tracking-[0.14em]" style="border-color: var(--vm-border); background-color: rgba(255, 253, 242, 0.88);">
+                                        {{ $focus }}
+                                    </span>
+                                @endforeach
                             </div>
                         </div>
 
-                        <div class="pixel-card environment-card {{ $theme['card_class'] }}">
-                            <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Desafios de aprendizado</p>
+                        <div class="pixel-card-quiet environment-card {{ $theme['card_class'] }}">
+                            <div class="flex items-center justify-between gap-3">
+                                <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Aprendizado continuo</p>
+                                <a href="{{ route('dashboard') }}" class="pixel-link">Ver painel</a>
+                            </div>
+
                             <div class="mt-4 space-y-3">
                                 @forelse ($challenges as $challenge)
                                     <div class="environment-panel">
@@ -169,10 +177,17 @@
                         </div>
                     </div>
                 </section>
-            @else
+            @elseif ($supportsTransactions)
                 <section class="grid gap-6 {{ $tips->isNotEmpty() ? 'lg:grid-cols-3' : '' }}">
                     <div class="pixel-card environment-card {{ $theme['card_class'] }} {{ $tips->isNotEmpty() ? 'lg:col-span-2' : '' }}">
-                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Movimentacoes recentes</p>
+                        <div class="flex items-center justify-between gap-3">
+                            <div>
+                                <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Movimentacoes recentes</p>
+                                <h3 class="mt-2 text-lg leading-relaxed">Ultimos registros</h3>
+                            </div>
+                            <a href="{{ $actionLinks['transactions'] }}" class="pixel-link">Abrir lista</a>
+                        </div>
+
                         <div class="mt-4 space-y-3">
                             @forelse ($recentTransactions as $transaction)
                                 <div class="environment-panel">
@@ -196,7 +211,7 @@
                     </div>
 
                     @if ($tips->isNotEmpty())
-                        <div class="pixel-card environment-card {{ $theme['card_class'] }}">
+                        <div class="pixel-card-quiet environment-card {{ $theme['card_class'] }}">
                             <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Dicas do ambiente</p>
                             <div class="mt-4 space-y-3">
                                 @foreach ($tips as $tip)
@@ -211,10 +226,10 @@
                 </section>
             @endif
 
-            @if ($recentGoals->isNotEmpty() || $challenges->isNotEmpty())
+            @if ($supportsGoals && ($recentGoals->isNotEmpty() || $challenges->isNotEmpty()))
                 <section class="grid gap-6 lg:grid-cols-2">
                     @if ($recentGoals->isNotEmpty())
-                        <div class="pixel-card environment-card {{ $theme['card_class'] }}">
+                        <div class="pixel-card-quiet environment-card {{ $theme['card_class'] }}">
                             <div class="flex items-center justify-between gap-3">
                                 <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Metas relacionadas</p>
                                 <a href="{{ $actionLinks['goals'] }}" class="pixel-link">Abrir metas</a>
@@ -234,14 +249,12 @@
                     @endif
 
                     @if ($challenges->isNotEmpty())
-                        <div class="pixel-card environment-card {{ $theme['card_class'] }}">
+                        <div class="pixel-card-quiet environment-card {{ $theme['card_class'] }}">
                             <div class="flex items-center justify-between gap-3">
                                 <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">
                                     {{ $highlights['kind'] === 'gamified' ? 'Desafios e conquistas' : 'Desafios do ambiente' }}
                                 </p>
-                                @if ($highlights['kind'] !== 'educational')
-                                    <a href="{{ route('dashboard') }}" class="pixel-link">Ver progresso</a>
-                                @endif
+                                <a href="{{ route('dashboard') }}" class="pixel-link">Ver painel</a>
                             </div>
 
                             <div class="mt-4 space-y-3">
@@ -249,9 +262,6 @@
                                     <div class="environment-panel">
                                         <p class="text-sm font-extrabold">{{ $challenge->name }}</p>
                                         <p class="mt-2 text-sm leading-6">{{ $challenge->description }}</p>
-                                        <p class="mt-2 text-xs font-extrabold uppercase tracking-[0.14em] text-[color:var(--vm-wood)]">
-                                            Meta: {{ $challenge->goal_target }} - +{{ $challenge->points_reward }} pontos
-                                        </p>
                                     </div>
                                 @endforeach
                             </div>
@@ -260,17 +270,15 @@
                 </section>
             @endif
 
-            @if ($highlights['kind'] !== 'educational' && $recentItems->isNotEmpty())
-                <section class="pixel-card environment-card {{ $theme['card_class'] }}">
+            @if ($supportsItems && $recentItems->isNotEmpty())
+                <section class="pixel-card-quiet environment-card {{ $theme['card_class'] }}">
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Complemento do ambiente</p>
-                            <h3 class="mt-2 text-lg leading-relaxed">
-                                {{ $environment->slug === 'casa' ? 'Itens e cuidados da rotina domestica' : 'Itens e apoio deste ambiente' }}
-                            </h3>
+                            <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Itens do ambiente</p>
+                            <h3 class="mt-2 text-lg leading-relaxed">Apoio rapido</h3>
                         </div>
 
-                        <a href="{{ $actionLinks['items_create'] }}" class="pixel-btn w-full sm:w-auto" style="background-color: var(--vm-panel);">
+                        <a href="{{ $actionLinks['items_create'] }}" class="pixel-btn pixel-btn-secondary w-full sm:w-auto">
                             Adicionar item
                         </a>
                     </div>

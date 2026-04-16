@@ -33,7 +33,6 @@
 
                 <section class="grid flex-1 items-center gap-6 py-8 sm:gap-8 sm:py-10 lg:grid-cols-[1.15fr_0.85fr] lg:py-16">
                     <div class="pixel-card-soft p-4 sm:p-8">
-                        <span class="pixel-badge">TCC em Laravel</span>
                         <h1 class="mt-4 text-2xl leading-relaxed sm:mt-6 sm:text-4xl">
                             Vale das Moedas
                         </h1>
@@ -55,7 +54,6 @@
 
                     <div class="pixel-card pixel-scene flex min-h-[300px] flex-col justify-between sm:min-h-[360px]">
                         <div>
-                            <span class="pixel-badge">Visual base</span>
                             <h2 class="mt-4 text-xl leading-relaxed sm:mt-5 sm:text-2xl">Direção inspirada em pixel art</h2>
                             <p class="mt-4 text-sm font-bold leading-6 sm:text-base sm:leading-7">
                                 A autenticação já está pronta com Laravel Breeze, mas o layout foi ajustado para uma identidade mais lúdica, acolhedora e próxima do universo do Stardew Valley.
