@@ -3,28 +3,21 @@
 namespace App\Http\Requests;
 
 use App\Models\Category;
+use App\Models\Environment;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class StoreFinancialTransactionRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            'environment_id' => ['nullable', 'exists:environments,id'],
+            'environment_id' => ['required', 'exists:environments,id'],
             'category_id' => ['required', 'exists:categories,id'],
             'type' => ['required', Rule::in(['income', 'expense'])],
             'title' => ['required', 'string', 'max:255'],
@@ -40,9 +33,14 @@ class StoreFinancialTransactionRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             $category = Category::query()->find($this->integer('category_id'));
+            $environment = Environment::query()->find($this->integer('environment_id'));
 
             if ($category && $category->type !== $this->input('type')) {
-                $validator->errors()->add('category_id', 'A categoria selecionada não corresponde ao tipo informado.');
+                $validator->errors()->add('category_id', 'A categoria selecionada nao corresponde ao tipo informado.');
+            }
+
+            if ($environment && $this->input('type') === 'income' && $environment->slug !== 'casa') {
+                $validator->errors()->add('type', 'Receitas devem ser registradas na Casa.');
             }
         });
     }

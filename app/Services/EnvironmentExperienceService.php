@@ -32,10 +32,15 @@ class EnvironmentExperienceService
             ->where('slug', $slug)
             ->firstOrFail();
 
+        $highlights = $this->getEnvironmentHighlights($environment->slug);
+        $supportsTransactions = in_array($highlights['kind'], ['home', 'operational'], true);
+        $supportsItems = in_array($highlights['kind'], ['home', 'operational'], true);
+        $supportsGoals = $highlights['kind'] === 'gamified';
+
         return [
             'environment' => $environment,
             'summary' => $this->getEnvironmentSummary($user, $environment),
-            'highlights' => $this->getEnvironmentHighlights($environment->slug),
+            'highlights' => $highlights,
             'theme' => $this->getEnvironmentTheme($environment->slug),
             'tips' => $environment->tips()
                 ->where('is_active', true)
@@ -63,6 +68,9 @@ class EnvironmentExperienceService
                 ->take(5)
                 ->get(),
             'actionLinks' => $this->getActionLinks($environment),
+            'supportsTransactions' => $supportsTransactions,
+            'supportsItems' => $supportsItems,
+            'supportsGoals' => $supportsGoals,
         ];
     }
 
@@ -87,14 +95,14 @@ class EnvironmentExperienceService
     {
         return match ($slug) {
             'casa' => [
-                'title' => 'Contas fixas e rotina da casa',
-                'description' => 'Aqui ficam despesas como agua, luz, aluguel, internet e o controle dos itens domesticos.',
-                'focus' => ['Moradia', 'Itens da casa', 'Contas recorrentes'],
-                'kind' => 'operational',
+                'title' => 'Centro financeiro da rotina',
+                'description' => 'A Casa concentra receitas, contas fixas, despesas da base da vida financeira e itens domesticos.',
+                'focus' => ['Receitas', 'Contas da casa', 'Itens domesticos'],
+                'kind' => 'home',
             ],
             'escola' => [
-                'title' => 'Educacao financeira e planejamento',
-                'description' => 'Ambiente voltado para informacoes, dicas e aprendizado financeiro para formar habitos melhores.',
+                'title' => 'Educacao financeira e orientacao',
+                'description' => 'A Escola existe para aprender: dicas, conceitos e apoio para tomar decisoes financeiras melhores.',
                 'focus' => ['Dicas financeiras', 'Planejamento', 'Aprendizado'],
                 'kind' => 'educational',
             ],
@@ -112,7 +120,7 @@ class EnvironmentExperienceService
             ],
             'parque-de-diversoes' => [
                 'title' => 'Metas, recompensas e evolucao',
-                'description' => 'O lado ludico do sistema: metas, desafios, conquistas e celebracao do progresso.',
+                'description' => 'O Parque e o espaco das metas, do progresso e da parte ludica do sistema.',
                 'focus' => ['Metas', 'Conquistas', 'Desafios'],
                 'kind' => 'gamified',
             ],

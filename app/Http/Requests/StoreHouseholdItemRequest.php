@@ -22,7 +22,7 @@ class StoreHouseholdItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'environment_id' => ['nullable', 'exists:environments,id'],
+            'environment_id' => ['required', 'exists:environments,id'],
             'name' => ['required', 'string', 'max:255'],
             'unit' => ['required', 'string', 'max:30'],
             'quantity' => ['required', 'integer', 'min:0'],

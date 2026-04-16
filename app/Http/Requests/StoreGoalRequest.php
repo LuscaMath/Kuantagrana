@@ -23,7 +23,7 @@ class StoreGoalRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'environment_id' => ['nullable', 'exists:environments,id'],
+            'environment_id' => ['required', 'exists:environments,id'],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'target_amount' => ['required', 'numeric', 'min:0.01'],
