@@ -73,6 +73,6 @@ it('shows dynamic gamification data on the dashboard', function () {
         ->get(route('dashboard'));
 
     $response->assertOk();
-    $response->assertSee('você tem', false);
+    $response->assertSee('voce tem', false);
     $response->assertSee('Primeiro Registro');
 });

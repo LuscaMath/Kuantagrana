@@ -21,7 +21,7 @@ beforeEach(function () {
     ]);
 });
 
-it('displays the financial transactions page for authenticated users', function () {
+it('displays the financial transaction environment chooser for authenticated users', function () {
     $user = User::factory()->create();
 
     $response = $this
@@ -29,10 +29,11 @@ it('displays the financial transactions page for authenticated users', function 
         ->get(route('financial-transactions.index'));
 
     $response->assertOk();
-    $response->assertSee('Transações financeiras');
+    $response->assertSee('Escolha um ambiente para ver as transacoes');
+    $response->assertSee('Ver transacoes de Casa');
 });
 
-it('creates a financial transaction and awards points to the user', function () {
+it('creates a financial transaction inside the selected environment and awards points to the user', function () {
     $user = User::factory()->create(['points' => 0]);
     $category = Category::query()->where('type', 'expense')->firstOrFail();
 
@@ -50,10 +51,11 @@ it('creates a financial transaction and awards points to the user', function () 
             'is_recurring' => false,
         ]);
 
-    $response->assertRedirect(route('financial-transactions.index'));
+    $response->assertRedirect(route('financial-transactions.index', ['environment_id' => $category->environment_id]));
 
     $this->assertDatabaseHas('financial_transactions', [
         'user_id' => $user->id,
+        'environment_id' => $category->environment_id,
         'category_id' => $category->id,
         'title' => 'Compra no mercado',
         'type' => 'expense',

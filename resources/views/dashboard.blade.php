@@ -47,12 +47,12 @@
                             Abrir mapa dos ambientes
                         </a>
 
-                        <a href="{{ route('financial-transactions.create') }}" class="pixel-btn pixel-btn-secondary w-full">
-                            Registrar transacao
+                        <a href="{{ route('environments.show', 'casa') }}" class="pixel-btn pixel-btn-secondary w-full">
+                            Entrar na Casa
                         </a>
 
-                        <a href="{{ route('goals.create') }}" class="pixel-btn pixel-btn-secondary w-full">
-                            Criar meta
+                        <a href="{{ route('environments.show', 'parque-de-diversoes') }}" class="pixel-btn pixel-btn-secondary w-full">
+                            Ir para o Parque
                         </a>
                     </div>
                 </div>

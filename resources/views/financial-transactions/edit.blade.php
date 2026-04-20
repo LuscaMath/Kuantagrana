@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <div>
-            <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[color:var(--vm-wood)]">Controle financeiro</p>
-            <h2 class="text-lg leading-relaxed sm:text-2xl">Editar transação</h2>
+            <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[color:var(--vm-wood)]">{{ $selectedEnvironment?->name ?? 'Controle financeiro' }}</p>
+            <h2 class="text-lg leading-relaxed sm:text-2xl">Editar transacao em {{ $selectedEnvironment?->name ?? 'contexto financeiro' }}</h2>
         </div>
     </x-slot>
 
@@ -16,12 +16,12 @@
                     @include('financial-transactions._form')
 
                     <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-between">
-                        <a href="{{ route('financial-transactions.index') }}" class="pixel-btn w-full sm:w-auto" style="background-color: var(--vm-panel);">
+                        <a href="{{ route('financial-transactions.index', ['environment_id' => $selectedEnvironment?->id ?? $transaction->environment_id]) }}" class="pixel-btn pixel-btn-secondary w-full sm:w-auto">
                             Voltar
                         </a>
 
                         <x-primary-button class="w-full sm:w-auto">
-                            Atualizar transação
+                            Atualizar transacao
                         </x-primary-button>
                     </div>
                 </form>

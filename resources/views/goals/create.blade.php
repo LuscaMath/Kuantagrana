@@ -19,7 +19,7 @@
                     @include('goals._form')
 
                     <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-between">
-                        <a href="{{ route('goals.index', ['environment_id' => old('environment_id', $goal->environment_id)]) }}" class="pixel-btn w-full sm:w-auto" style="background-color: var(--vm-panel);">
+                        <a href="{{ route('goals.index', ['environment_id' => old('environment_id', $goal->environment_id)]) }}" class="pixel-btn pixel-btn-secondary w-full sm:w-auto">
                             Voltar
                         </a>
 

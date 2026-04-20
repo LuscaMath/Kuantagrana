@@ -21,7 +21,7 @@ beforeEach(function () {
     ]);
 });
 
-it('displays the household items page for authenticated users', function () {
+it('displays the household items environment chooser for authenticated users', function () {
     $user = User::factory()->create();
 
     $response = $this
@@ -29,12 +29,13 @@ it('displays the household items page for authenticated users', function () {
         ->get(route('household-items.index'));
 
     $response->assertOk();
-    $response->assertSee('Itens domésticos');
+    $response->assertSee('Escolha um ambiente para gerenciar itens');
+    $response->assertSee('Ver itens de Casa');
 });
 
-it('creates a household item and awards points to the user', function () {
+it('creates a household item inside the selected environment and awards points to the user', function () {
     $user = User::factory()->create(['points' => 0]);
-    $environment = Environment::query()->firstOrFail();
+    $environment = Environment::query()->active()->supporting('items')->firstOrFail();
 
     $response = $this
         ->actingAs($user)
@@ -49,10 +50,11 @@ it('creates a household item and awards points to the user', function () {
             'is_active' => true,
         ]);
 
-    $response->assertRedirect(route('household-items.index'));
+    $response->assertRedirect(route('household-items.index', ['environment_id' => $environment->id]));
 
     $this->assertDatabaseHas('household_items', [
         'user_id' => $user->id,
+        'environment_id' => $environment->id,
         'name' => 'Arroz',
         'unit' => 'kg',
     ]);

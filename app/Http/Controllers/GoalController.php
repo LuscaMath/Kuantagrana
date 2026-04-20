@@ -14,8 +14,6 @@ use Illuminate\View\View;
 
 class GoalController extends Controller
 {
-    private const ALLOWED_ENVIRONMENT_SLUG = 'parque-de-diversoes';
-
     public function __construct(
         private readonly GoalService $goalService,
     ) {
@@ -23,30 +21,30 @@ class GoalController extends Controller
 
     public function index(Request $request): View
     {
-        $filters = $request->only(['environment_id']);
+        $selectedEnvironment = Environment::query()->active()->supporting('goals')->orderBy('display_order')->firstOrFail();
+        $filters = [
+            'environment_id' => (string) $selectedEnvironment->id,
+        ];
 
         return view('goals.index', [
             'goals' => $this->goalService->getPaginatedForUser($request->user(), $filters),
-            'filters' => [
-                'environment_id' => $filters['environment_id'] ?? '',
-            ],
-            'environments' => Environment::query()
-                ->where('is_active', true)
-                ->where('slug', self::ALLOWED_ENVIRONMENT_SLUG)
-                ->orderBy('display_order')
-                ->get(),
+            'filters' => $filters,
+            'environments' => Environment::query()->active()->supporting('goals')->orderBy('display_order')->get(),
+            'selectedEnvironment' => $selectedEnvironment,
         ]);
     }
 
-    public function create(Request $request): View
+    public function create(Request $request): RedirectResponse|View
     {
         $selectedEnvironmentId = $request->integer('environment_id') ?: null;
         $selectedEnvironment = $selectedEnvironmentId
             ? Environment::query()->whereKey($selectedEnvironmentId)->first()
-            : Environment::query()->where('slug', self::ALLOWED_ENVIRONMENT_SLUG)->first();
+            : Environment::query()->active()->supporting('goals')->orderBy('display_order')->first();
 
-        if (! $selectedEnvironment || $selectedEnvironment->slug !== self::ALLOWED_ENVIRONMENT_SLUG) {
-            abort(404);
+        if (! $selectedEnvironment || ! $selectedEnvironment->supportsFeature('goals')) {
+            return redirect()
+                ->route('goals.index')
+                ->with('status', 'As metas sao organizadas dentro do Parque.');
         }
 
         return view('goals.create', [
@@ -55,11 +53,7 @@ class GoalController extends Controller
                 'start_date' => now()->toDateString(),
                 'environment_id' => $selectedEnvironment->id,
             ]),
-            'environments' => Environment::query()
-                ->where('is_active', true)
-                ->where('slug', self::ALLOWED_ENVIRONMENT_SLUG)
-                ->orderBy('display_order')
-                ->get(),
+            'environments' => Environment::query()->active()->supporting('goals')->orderBy('display_order')->get(),
             'selectedEnvironment' => $selectedEnvironment,
         ]);
     }
@@ -67,10 +61,10 @@ class GoalController extends Controller
     public function store(StoreGoalRequest $request): RedirectResponse
     {
         $this->ensureEnvironmentSupportsGoals($request->input('environment_id'));
-        $this->goalService->create($request->user(), $request->validated());
+        $goal = $this->goalService->create($request->user(), $request->validated());
 
         return redirect()
-            ->route('goals.index')
+            ->route('goals.index', ['environment_id' => $goal->environment_id])
             ->with('status', 'Meta criada com sucesso.');
     }
 
@@ -80,11 +74,7 @@ class GoalController extends Controller
 
         return view('goals.edit', [
             'goal' => $goal->load('contributions'),
-            'environments' => Environment::query()
-                ->where('is_active', true)
-                ->where('slug', self::ALLOWED_ENVIRONMENT_SLUG)
-                ->orderBy('display_order')
-                ->get(),
+            'environments' => Environment::query()->active()->supporting('goals')->orderBy('display_order')->get(),
             'selectedEnvironment' => $goal->environment,
         ]);
     }
@@ -94,21 +84,22 @@ class GoalController extends Controller
         abort_if($goal->user_id !== $request->user()->id, 403);
         $this->ensureEnvironmentSupportsGoals($request->input('environment_id'));
 
-        $this->goalService->update($goal, $request->validated());
+        $goal = $this->goalService->update($goal, $request->validated());
 
         return redirect()
-            ->route('goals.index')
+            ->route('goals.index', ['environment_id' => $goal->environment_id])
             ->with('status', 'Meta atualizada com sucesso.');
     }
 
     public function destroy(Request $request, Goal $goal): RedirectResponse
     {
         abort_if($goal->user_id !== $request->user()->id, 403);
+        $environmentId = $goal->environment_id;
 
         $this->goalService->delete($goal);
 
         return redirect()
-            ->route('goals.index')
+            ->route('goals.index', ['environment_id' => $environmentId])
             ->with('status', 'Meta removida com sucesso.');
     }
 
@@ -127,6 +118,6 @@ class GoalController extends Controller
     {
         $environment = Environment::query()->findOrFail($environmentId);
 
-        abort_unless($environment->slug === self::ALLOWED_ENVIRONMENT_SLUG, 404);
+        abort_unless($environment->supportsFeature('goals'), 404);
     }
 }

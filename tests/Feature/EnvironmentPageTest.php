@@ -28,9 +28,10 @@ it('displays the environment map for authenticated users', function () {
         ->get(route('environments.index'));
 
     $response->assertOk();
-    $response->assertSee('Ambientes do Vale das Moedas');
+    $response->assertSee('Escolha por contexto');
+    $response->assertSee('Cada ambiente organiza uma parte da rotina');
     $response->assertSee('Casa');
-    $response->assertSee('Parque de Diversões');
+    $response->assertSee('Parque de Divers');
 });
 
 it('displays a specific environment page with contextual content', function () {
@@ -43,6 +44,7 @@ it('displays a specific environment page with contextual content', function () {
 
     $response->assertOk();
     $response->assertSee($environment->name);
-    $response->assertSee('Contas fixas e rotina da casa');
+    $response->assertSee('Centro financeiro da rotina');
+    $response->assertSee('Movimentacoes recentes');
     $response->assertSee('Dicas do ambiente');
 });

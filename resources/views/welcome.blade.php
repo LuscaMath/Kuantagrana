@@ -22,7 +22,7 @@
                         <div class="grid w-full gap-3 sm:flex sm:w-auto sm:flex-wrap">
                             @auth
                                 <a href="{{ route('environments.index') }}" class="pixel-btn">Abrir mapa</a>
-                                <a href="{{ route('dashboard') }}" class="pixel-btn" style="background-color: var(--vm-panel);">Painel</a>
+                                <a href="{{ route('dashboard') }}" class="pixel-btn" style="background-color: var(--vm-panel);">Ver painel</a>
                             @else
                                 <a href="{{ route('login') }}" class="pixel-btn">Login</a>
                                 <a href="{{ route('register') }}" class="pixel-btn" style="background-color: var(--vm-panel);">Cadastro</a>

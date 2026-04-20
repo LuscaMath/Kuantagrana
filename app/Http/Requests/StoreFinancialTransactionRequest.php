@@ -39,7 +39,15 @@ class StoreFinancialTransactionRequest extends FormRequest
                 $validator->errors()->add('category_id', 'A categoria selecionada nao corresponde ao tipo informado.');
             }
 
-            if ($environment && $this->input('type') === 'income' && $environment->slug !== 'casa') {
+            if ($category && $environment && $category->environment_id !== $environment->id) {
+                $validator->errors()->add('category_id', 'A categoria selecionada nao pertence ao ambiente informado.');
+            }
+
+            if ($environment && ! $environment->supportsFeature('transactions')) {
+                $validator->errors()->add('environment_id', 'O ambiente selecionado nao aceita transacoes.');
+            }
+
+            if ($environment && $this->input('type') === 'income' && ! $environment->supportsFeature('income_transactions')) {
                 $validator->errors()->add('type', 'Receitas devem ser registradas na Casa.');
             }
         });

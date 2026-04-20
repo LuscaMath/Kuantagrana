@@ -21,7 +21,7 @@ beforeEach(function () {
     ]);
 });
 
-it('displays the goals page for authenticated users', function () {
+it('displays the park-centered goals page for authenticated users', function () {
     $user = User::factory()->create();
 
     $response = $this
@@ -29,12 +29,13 @@ it('displays the goals page for authenticated users', function () {
         ->get(route('goals.index'));
 
     $response->assertOk();
-    $response->assertSee('Metas financeiras');
+    $response->assertSee('Metas do Parque');
+    $response->assertSee('O Parque concentra sonhos, recompensas e progresso');
 });
 
-it('creates a goal and awards points to the user', function () {
+it('creates a goal inside the park and awards points to the user', function () {
     $user = User::factory()->create(['points' => 0]);
-    $environment = Environment::query()->firstOrFail();
+    $environment = Environment::query()->where('slug', 'parque-de-diversoes')->firstOrFail();
 
     $response = $this
         ->actingAs($user)
@@ -48,10 +49,11 @@ it('creates a goal and awards points to the user', function () {
             'status' => 'active',
         ]);
 
-    $response->assertRedirect(route('goals.index'));
+    $response->assertRedirect(route('goals.index', ['environment_id' => $environment->id]));
 
     $this->assertDatabaseHas('goals', [
         'user_id' => $user->id,
+        'environment_id' => $environment->id,
         'title' => 'Notebook novo',
         'status' => 'active',
     ]);
@@ -63,8 +65,8 @@ it('adds a contribution and completes the goal when target is reached', function
     $user = User::factory()->create(['points' => 0]);
     $goal = Goal::query()->create([
         'user_id' => $user->id,
-        'environment_id' => Environment::query()->value('id'),
-        'title' => 'Reserva de emergência',
+        'environment_id' => Environment::query()->where('slug', 'parque-de-diversoes')->value('id'),
+        'title' => 'Reserva de emergencia',
         'target_amount' => 500,
         'current_amount' => 450,
         'status' => 'active',

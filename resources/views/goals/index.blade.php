@@ -2,11 +2,15 @@
     <x-slot name="header">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[color:var(--vm-wood)]">Planejamento</p>
-                <h2 class="text-lg leading-relaxed sm:text-2xl">Metas financeiras</h2>
+                <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[color:var(--vm-wood)]">
+                    {{ $selectedEnvironment?->name ?? 'Planejamento' }}
+                </p>
+                <h2 class="text-lg leading-relaxed sm:text-2xl">
+                    {{ $selectedEnvironment ? 'Metas do ' . $selectedEnvironment->name : 'Metas financeiras' }}
+                </h2>
             </div>
 
-            <a href="{{ route('goals.create') }}" class="pixel-btn w-full sm:w-auto">
+            <a href="{{ route('goals.create', ['environment_id' => $selectedEnvironment?->id]) }}" class="pixel-btn w-full sm:w-auto">
                 Nova meta
             </a>
         </div>
@@ -19,6 +23,13 @@
                     {{ session('status') }}
                 </div>
             @endif
+
+            <section class="pixel-card-soft p-5 sm:p-6">
+                <h3 class="text-lg leading-relaxed sm:text-2xl">O Parque concentra sonhos, recompensas e progresso</h3>
+                <p class="mt-3 max-w-3xl text-sm font-bold leading-6 sm:text-base sm:leading-7">
+                    Aqui voce acompanha suas metas, registra contribuicoes e visualiza a evolucao do que quer conquistar.
+                </p>
+            </section>
 
             <section class="grid gap-4 sm:grid-cols-3">
                 <div class="pixel-stat">
@@ -40,9 +51,17 @@
             </section>
 
             <section class="pixel-card">
-                <div>
-                    <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Lista de metas</p>
-                    <h3 class="mt-2 text-lg">Objetivos cadastrados</h3>
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Lista de metas</p>
+                        <h3 class="mt-2 text-lg">Objetivos do Parque</h3>
+                    </div>
+
+                    @if ($selectedEnvironment)
+                        <a href="{{ route('environments.show', $selectedEnvironment->slug) }}" class="pixel-btn pixel-btn-secondary w-full sm:w-auto">
+                            Voltar ao ambiente
+                        </a>
+                    @endif
                 </div>
 
                 <div class="mt-5 space-y-3">
@@ -114,7 +133,7 @@
                         </article>
                     @empty
                         <div class="border-4 p-4 text-sm font-bold" style="border-color: rgba(61, 43, 31, 0.7); background-color: #fffdf2;">
-                            Voce ainda nao cadastrou metas financeiras.
+                            Voce ainda nao cadastrou metas no Parque.
                         </div>
                     @endforelse
                 </div>

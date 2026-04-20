@@ -8,26 +8,32 @@
                     </a>
                 </div>
 
-                <div class="hidden items-center gap-6 sm:ms-8 sm:flex">
+                <div class="hidden items-center gap-4 sm:ms-8 sm:flex">
                     <a href="{{ route('environments.index') }}" class="pixel-btn px-3 py-2 text-[10px] sm:px-4 {{ request()->routeIs('environments.*') ? '' : 'pixel-btn-secondary' }}">
                         Mapa
                     </a>
 
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <a href="{{ route('dashboard') }}" class="pixel-btn px-3 py-2 text-[10px] sm:px-4 {{ request()->routeIs('dashboard') ? '' : 'pixel-btn-secondary' }}">
                         Painel
-                    </x-nav-link>
+                    </a>
 
-                    <x-nav-link :href="route('financial-transactions.index')" :active="request()->routeIs('financial-transactions.*')">
-                        Transacoes
-                    </x-nav-link>
+                    <div class="flex items-center gap-4 border-l-4 pl-4" style="border-color: rgba(61, 43, 31, 0.28);">
+                        <span class="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[color:var(--vm-wood)]">
+                            Atalhos
+                        </span>
 
-                    <x-nav-link :href="route('goals.index')" :active="request()->routeIs('goals.*')">
-                        Metas
-                    </x-nav-link>
+                        <x-nav-link :href="route('financial-transactions.index')" :active="request()->routeIs('financial-transactions.*')">
+                            Transacoes
+                        </x-nav-link>
 
-                    <x-nav-link :href="route('household-items.index')" :active="request()->routeIs('household-items.*')">
-                        Itens
-                    </x-nav-link>
+                        <x-nav-link :href="route('goals.index')" :active="request()->routeIs('goals.*')">
+                            Metas
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('household-items.index')" :active="request()->routeIs('household-items.*')">
+                            Itens
+                        </x-nav-link>
+                    </div>
                 </div>
             </div>
 
@@ -80,9 +86,13 @@
                 Abrir mapa
             </a>
 
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                Painel
-            </x-responsive-nav-link>
+            <a href="{{ route('dashboard') }}" class="pixel-btn w-full {{ request()->routeIs('dashboard') ? '' : 'pixel-btn-secondary' }}">
+                Abrir painel
+            </a>
+
+            <p class="px-1 pt-3 text-[10px] font-extrabold uppercase tracking-[0.18em] text-[color:var(--vm-wood)]">
+                Atalhos por modulo
+            </p>
 
             <x-responsive-nav-link :href="route('financial-transactions.index')" :active="request()->routeIs('financial-transactions.*')">
                 Transacoes

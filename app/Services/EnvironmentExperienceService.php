@@ -10,14 +10,14 @@ class EnvironmentExperienceService
     public function getMapData(User $user): array
     {
         $environments = Environment::query()
-            ->where('is_active', true)
+            ->active()
             ->orderBy('display_order')
             ->get()
             ->map(fn (Environment $environment) => [
                 'environment' => $environment,
                 'summary' => $this->getEnvironmentSummary($user, $environment),
-                'highlights' => $this->getEnvironmentHighlights($environment->slug),
-                'theme' => $this->getEnvironmentTheme($environment->slug),
+                'highlights' => $environment->getHighlights(),
+                'theme' => $environment->getTheme(),
             ]);
 
         return [
@@ -28,20 +28,17 @@ class EnvironmentExperienceService
     public function getEnvironmentPageData(User $user, string $slug): array
     {
         $environment = Environment::query()
-            ->where('is_active', true)
+            ->active()
             ->where('slug', $slug)
             ->firstOrFail();
 
-        $highlights = $this->getEnvironmentHighlights($environment->slug);
-        $supportsTransactions = in_array($highlights['kind'], ['home', 'operational'], true);
-        $supportsItems = in_array($highlights['kind'], ['home', 'operational'], true);
-        $supportsGoals = $highlights['kind'] === 'gamified';
+        $highlights = $environment->getHighlights();
 
         return [
             'environment' => $environment,
             'summary' => $this->getEnvironmentSummary($user, $environment),
             'highlights' => $highlights,
-            'theme' => $this->getEnvironmentTheme($environment->slug),
+            'theme' => $environment->getTheme(),
             'tips' => $environment->tips()
                 ->where('is_active', true)
                 ->orderBy('display_order')
@@ -68,9 +65,9 @@ class EnvironmentExperienceService
                 ->take(5)
                 ->get(),
             'actionLinks' => $this->getActionLinks($environment),
-            'supportsTransactions' => $supportsTransactions,
-            'supportsItems' => $supportsItems,
-            'supportsGoals' => $supportsGoals,
+            'supportsTransactions' => $environment->supportsFeature('transactions'),
+            'supportsItems' => $environment->supportsFeature('items'),
+            'supportsGoals' => $environment->supportsFeature('goals'),
         ];
     }
 
@@ -89,78 +86,6 @@ class EnvironmentExperienceService
             'items_count' => (clone $items)->count(),
             'low_stock_items' => (clone $items)->whereColumn('quantity', '<=', 'minimum_quantity')->count(),
         ];
-    }
-
-    protected function getEnvironmentHighlights(string $slug): array
-    {
-        return match ($slug) {
-            'casa' => [
-                'title' => 'Centro financeiro da rotina',
-                'description' => 'A Casa concentra receitas, contas fixas, despesas da base da vida financeira e itens domesticos.',
-                'focus' => ['Receitas', 'Contas da casa', 'Itens domesticos'],
-                'kind' => 'home',
-            ],
-            'escola' => [
-                'title' => 'Educacao financeira e orientacao',
-                'description' => 'A Escola existe para aprender: dicas, conceitos e apoio para tomar decisoes financeiras melhores.',
-                'focus' => ['Dicas financeiras', 'Planejamento', 'Aprendizado'],
-                'kind' => 'educational',
-            ],
-            'mercado' => [
-                'title' => 'Compras e alimentacao',
-                'description' => 'Use este espaco para organizar despesas com mercado, alimentacao e reposicao do mes.',
-                'focus' => ['Compras do mes', 'Alimentacao', 'Reposicao'],
-                'kind' => 'operational',
-            ],
-            'farmacia' => [
-                'title' => 'Saude e higiene',
-                'description' => 'Concentre aqui remedios, higiene pessoal e outros gastos essenciais de cuidado.',
-                'focus' => ['Saude', 'Higiene', 'Essenciais'],
-                'kind' => 'operational',
-            ],
-            'parque-de-diversoes' => [
-                'title' => 'Metas, recompensas e evolucao',
-                'description' => 'O Parque e o espaco das metas, do progresso e da parte ludica do sistema.',
-                'focus' => ['Metas', 'Conquistas', 'Desafios'],
-                'kind' => 'gamified',
-            ],
-            default => [
-                'title' => 'Ambiente',
-                'description' => 'Acompanhe as informacoes relacionadas a este contexto do mapa.',
-                'focus' => [],
-                'kind' => 'default',
-            ],
-        };
-    }
-
-    protected function getEnvironmentTheme(string $slug): array
-    {
-        return match ($slug) {
-            'casa' => [
-                'card_class' => 'environment-theme-home',
-                'label' => 'Lar aconchegante',
-            ],
-            'escola' => [
-                'card_class' => 'environment-theme-school',
-                'label' => 'Espaco de aprendizado',
-            ],
-            'mercado' => [
-                'card_class' => 'environment-theme-market',
-                'label' => 'Corredor de compras',
-            ],
-            'farmacia' => [
-                'card_class' => 'environment-theme-pharmacy',
-                'label' => 'Cuidado e saude',
-            ],
-            'parque-de-diversoes' => [
-                'card_class' => 'environment-theme-park',
-                'label' => 'Recompensa e progresso',
-            ],
-            default => [
-                'card_class' => '',
-                'label' => 'Ambiente',
-            ],
-        };
     }
 
     protected function getActionLinks(Environment $environment): array
