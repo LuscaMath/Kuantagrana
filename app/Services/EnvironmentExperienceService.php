@@ -33,6 +33,7 @@ class EnvironmentExperienceService
             ->firstOrFail();
 
         $highlights = $environment->getHighlights();
+        $transactionsQuery = $this->getTransactionsQueryForEnvironment($user, $environment);
 
         return [
             'environment' => $environment,
@@ -48,9 +49,8 @@ class EnvironmentExperienceService
                 ->where('is_active', true)
                 ->take(3)
                 ->get(),
-            'recentTransactions' => $user->financialTransactions()
+            'recentTransactions' => $transactionsQuery
                 ->with('category')
-                ->where('environment_id', $environment->id)
                 ->latest('transaction_date')
                 ->take(5)
                 ->get(),
@@ -59,23 +59,17 @@ class EnvironmentExperienceService
                 ->latest()
                 ->take(4)
                 ->get(),
-            'recentItems' => $user->householdItems()
-                ->where('environment_id', $environment->id)
-                ->latest()
-                ->take(5)
-                ->get(),
             'actionLinks' => $this->getActionLinks($environment),
             'supportsTransactions' => $environment->supportsFeature('transactions'),
-            'supportsItems' => $environment->supportsFeature('items'),
+            'supportsIncomeTransactions' => $environment->supportsFeature('income_transactions'),
             'supportsGoals' => $environment->supportsFeature('goals'),
         ];
     }
 
     protected function getEnvironmentSummary(User $user, Environment $environment): array
     {
-        $transactions = $user->financialTransactions()->where('environment_id', $environment->id);
+        $transactions = $this->getTransactionsQueryForEnvironment($user, $environment);
         $goals = $user->goals()->where('environment_id', $environment->id);
-        $items = $user->householdItems()->where('environment_id', $environment->id);
 
         return [
             'transactions_count' => (clone $transactions)->count(),
@@ -83,9 +77,20 @@ class EnvironmentExperienceService
             'expense_total' => (clone $transactions)->where('type', 'expense')->sum('amount'),
             'goals_count' => (clone $goals)->count(),
             'goals_completed' => (clone $goals)->where('status', 'completed')->count(),
-            'items_count' => (clone $items)->count(),
-            'low_stock_items' => (clone $items)->whereColumn('quantity', '<=', 'minimum_quantity')->count(),
+            'tips_count' => $environment->tips()->where('is_active', true)->count(),
+            'challenges_count' => $environment->challenges()->where('is_active', true)->count(),
         ];
+    }
+
+    protected function getTransactionsQueryForEnvironment(User $user, Environment $environment)
+    {
+        $query = $user->financialTransactions();
+
+        if ($environment->supportsFeature('income_transactions')) {
+            return $query;
+        }
+
+        return $query->where('environment_id', $environment->id);
     }
 
     protected function getActionLinks(Environment $environment): array
@@ -95,8 +100,6 @@ class EnvironmentExperienceService
             'transactions_create' => route('financial-transactions.create', ['environment_id' => $environment->id]),
             'goals' => route('goals.index', ['environment_id' => $environment->id]),
             'goals_create' => route('goals.create', ['environment_id' => $environment->id]),
-            'items' => route('household-items.index', ['environment_id' => $environment->id]),
-            'items_create' => route('household-items.create', ['environment_id' => $environment->id]),
         ];
     }
 }

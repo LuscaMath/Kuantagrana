@@ -61,11 +61,6 @@
                             <a href="{{ $actionLinks['transactions_create'] }}" class="pixel-btn pixel-btn-secondary w-full">
                                 Nova transacao
                             </a>
-                            @if ($supportsItems)
-                                <a href="{{ $actionLinks['items'] }}" class="pixel-btn pixel-btn-secondary w-full">
-                                    Ver itens
-                                </a>
-                            @endif
                         </div>
                     @endif
                 </div>
@@ -103,19 +98,33 @@
                 </section>
             @else
                 <section class="grid gap-4 md:grid-cols-3">
+                    @if ($supportsIncomeTransactions)
+                        <div class="pixel-stat">
+                            <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Receitas</p>
+                            <p class="mt-2 text-2xl font-extrabold">R$ {{ number_format($summary['income_total'], 2, ',', '.') }}</p>
+                        </div>
+                    @else
+                        <div class="pixel-stat">
+                            <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Despesas</p>
+                            <p class="mt-2 text-2xl font-extrabold">R$ {{ number_format($summary['expense_total'], 2, ',', '.') }}</p>
+                        </div>
+                    @endif
+
                     <div class="pixel-stat">
-                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Receitas</p>
-                        <p class="mt-2 text-2xl font-extrabold">R$ {{ number_format($summary['income_total'], 2, ',', '.') }}</p>
-                    </div>
-                    <div class="pixel-stat">
-                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Despesas</p>
-                        <p class="mt-2 text-2xl font-extrabold">R$ {{ number_format($summary['expense_total'], 2, ',', '.') }}</p>
+                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Transacoes</p>
+                        <p class="mt-2 text-2xl font-extrabold">{{ $summary['transactions_count'] }}</p>
                     </div>
                     <div class="pixel-stat">
                         <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">
-                            {{ $highlights['kind'] === 'home' ? 'Itens da casa' : 'Itens do ambiente' }}
+                            {{ $supportsIncomeTransactions ? 'Despesas' : 'Dicas' }}
                         </p>
-                        <p class="mt-2 text-2xl font-extrabold">{{ $summary['items_count'] }}</p>
+                        <p class="mt-2 text-2xl font-extrabold">
+                            @if ($supportsIncomeTransactions)
+                                R$ {{ number_format($summary['expense_total'], 2, ',', '.') }}
+                            @else
+                                {{ $tips->count() }}
+                            @endif
+                        </p>
                     </div>
                 </section>
             @endif
@@ -270,34 +279,6 @@
                 </section>
             @endif
 
-            @if ($supportsItems && $recentItems->isNotEmpty())
-                <section class="pixel-card-quiet environment-card {{ $theme['card_class'] }}">
-                    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                            <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Itens do ambiente</p>
-                            <h3 class="mt-2 text-lg leading-relaxed">Apoio rapido</h3>
-                        </div>
-
-                        <a href="{{ $actionLinks['items_create'] }}" class="pixel-btn pixel-btn-secondary w-full sm:w-auto">
-                            Adicionar item
-                        </a>
-                    </div>
-
-                    <div class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                        @foreach ($recentItems as $item)
-                            <div class="environment-panel">
-                                <p class="text-sm font-extrabold">{{ $item->name }}</p>
-                                <p class="mt-2 text-sm font-bold text-[color:var(--vm-wood)]">
-                                    {{ rtrim(rtrim(number_format($item->quantity, 2, ',', '.'), '0'), ',') }} {{ $item->unit }}
-                                </p>
-                                <p class="mt-2 text-xs font-extrabold uppercase tracking-[0.14em]">
-                                    Minimo: {{ rtrim(rtrim(number_format($item->minimum_quantity, 2, ',', '.'), '0'), ',') }} {{ $item->unit }}
-                                </p>
-                            </div>
-                        @endforeach
-                    </div>
-                </section>
-            @endif
         </div>
     </div>
 </x-app-layout>

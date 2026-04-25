@@ -17,7 +17,7 @@
                     <span class="pixel-badge">Visao geral</span>
                     <h3 class="mt-4 text-lg leading-relaxed sm:text-2xl">{{ $user->name }}, voce tem {{ $user->points }} pontos</h3>
                     <p class="mt-3 max-w-2xl text-sm font-bold leading-6 sm:text-base sm:leading-7">
-                        Use o mapa para entrar no contexto certo e registrar o que importa agora.
+                        Use a Casa para acompanhar a base da vida financeira, o Parque para evoluir suas metas e a Escola para aprender melhor antes de agir.
                     </p>
 
                     <div class="mt-5">
@@ -64,16 +64,19 @@
                     <p class="mt-2 text-2xl font-extrabold">
                         R$ {{ number_format($stats['income_month'] - $stats['expense_month'], 2, ',', '.') }}
                     </p>
+                    <p class="mt-1 text-sm font-bold text-[color:var(--vm-wood)]">Base consolidada da Casa</p>
                 </div>
 
                 <div class="pixel-stat">
                     <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Metas ativas</p>
                     <p class="mt-2 text-2xl font-extrabold">{{ $stats['active_goals'] }}</p>
+                    <p class="mt-1 text-sm font-bold text-[color:var(--vm-wood)]">Progresso acompanhado no Parque</p>
                 </div>
 
                 <div class="pixel-stat">
-                    <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Itens em alerta</p>
-                    <p class="mt-2 text-2xl font-extrabold">{{ $stats['low_stock_items'] }}</p>
+                    <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Transacoes</p>
+                    <p class="mt-2 text-2xl font-extrabold">{{ $stats['transactions_count'] }}</p>
+                    <p class="mt-1 text-sm font-bold text-[color:var(--vm-wood)]">Registros somados de todos os ambientes</p>
                 </div>
             </section>
 

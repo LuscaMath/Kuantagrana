@@ -16,10 +16,9 @@ class AchievementSeeder extends Seeder
         $environments = Environment::query()->pluck('id', 'slug');
 
         $achievements = [
-            ['name' => 'Primeiro Registro', 'slug' => 'primeiro-registro', 'environment_slug' => 'casa', 'description' => 'Registrou sua primeira transação financeira.', 'points_reward' => 20, 'badge_color' => '#8ed0ff'],
+            ['name' => 'Primeiro Registro', 'slug' => 'primeiro-registro', 'environment_slug' => 'casa', 'description' => 'Registrou sua primeira transacao financeira.', 'points_reward' => 20, 'badge_color' => '#8ed0ff'],
             ['name' => 'Sonho em Andamento', 'slug' => 'sonho-em-andamento', 'environment_slug' => 'escola', 'description' => 'Criou sua primeira meta financeira.', 'points_reward' => 30, 'badge_color' => '#7ccf7a'],
-            ['name' => 'Meta Concluída', 'slug' => 'meta-concluida', 'environment_slug' => 'parque-de-diversoes', 'description' => 'Concluiu uma meta financeira pela primeira vez.', 'points_reward' => 80, 'badge_color' => '#f0b429'],
-            ['name' => 'Casa Organizada', 'slug' => 'casa-organizada', 'environment_slug' => 'casa', 'description' => 'Cadastrou itens domésticos para controlar a rotina da casa.', 'points_reward' => 25, 'badge_color' => '#8f5f33'],
+            ['name' => 'Meta Concluida', 'slug' => 'meta-concluida', 'environment_slug' => 'parque-de-diversoes', 'description' => 'Concluiu uma meta financeira pela primeira vez.', 'points_reward' => 80, 'badge_color' => '#f0b429'],
         ];
 
         foreach ($achievements as $achievement) {

@@ -4,7 +4,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnvironmentController;
 use App\Http\Controllers\FinancialTransactionController;
 use App\Http\Controllers\GoalController;
-use App\Http\Controllers\HouseholdItemController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,8 +24,6 @@ Route::middleware('auth')->group(function () {
     Route::post('goals/{goal}/contributions', [GoalController::class, 'storeContribution'])
         ->name('goals.contributions.store');
     Route::resource('goals', GoalController::class)
-        ->except('show');
-    Route::resource('household-items', HouseholdItemController::class)
         ->except('show');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

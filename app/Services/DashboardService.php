@@ -31,9 +31,6 @@ class DashboardService
 
         $activeGoals = $user->goals()->where('status', 'active')->count();
         $completedGoals = $user->goals()->where('status', 'completed')->count();
-        $lowStockItems = $user->householdItems()
-            ->whereColumn('quantity', '<=', 'minimum_quantity')
-            ->count();
 
         return [
             'user' => $user,
@@ -46,8 +43,6 @@ class DashboardService
                 'expense_month' => (float) ($monthlyTransactions['expense'] ?? 0),
                 'active_goals' => $activeGoals,
                 'completed_goals' => $completedGoals,
-                'household_items_count' => $user->householdItems()->count(),
-                'low_stock_items' => $lowStockItems,
             ],
             'recentAchievements' => $user->userAchievements()
                 ->with('achievement')

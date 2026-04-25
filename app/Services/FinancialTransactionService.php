@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Environment;
 use App\Models\FinancialTransaction;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -42,21 +43,51 @@ class FinancialTransactionService
             ? Carbon::createFromFormat('Y-m', $month)
             : now();
 
-        $baseQuery = FinancialTransaction::query()
+        $monthlyQuery = FinancialTransaction::query()
             ->whereBelongsTo($user)
-            ->when($environmentId, fn (Builder $query, string $value) => $query->where('environment_id', $value))
             ->whereBetween('transaction_date', [
                 $date->copy()->startOfMonth()->toDateString(),
                 $date->copy()->endOfMonth()->toDateString(),
             ]);
 
-        $income = (clone $baseQuery)->where('type', 'income')->sum('amount');
-        $expense = (clone $baseQuery)->where('type', 'expense')->sum('amount');
+        $incomeQuery = clone $monthlyQuery;
+        $expenseQuery = clone $monthlyQuery;
+        $balanceIncomeQuery = clone $monthlyQuery;
+        $balanceExpenseQuery = clone $monthlyQuery;
+
+        if ($environmentId) {
+            $environment = Environment::query()->find($environmentId);
+            $incomeEnvironmentIds = Environment::query()
+                ->active()
+                ->supporting('income_transactions')
+                ->pluck('id');
+
+            $expenseEnvironmentIds = Environment::query()
+                ->active()
+                ->supporting('transactions')
+                ->pluck('id');
+
+            if ($environment?->supportsFeature('income_transactions')) {
+                $incomeQuery->whereIn('environment_id', $incomeEnvironmentIds);
+                $expenseQuery->whereIn('environment_id', $expenseEnvironmentIds);
+            } else {
+                $incomeQuery->whereIn('environment_id', $incomeEnvironmentIds);
+                $expenseQuery->where('environment_id', $environmentId);
+            }
+
+            $balanceIncomeQuery->whereIn('environment_id', $incomeEnvironmentIds);
+            $balanceExpenseQuery->whereIn('environment_id', $expenseEnvironmentIds);
+        }
+
+        $income = $incomeQuery->where('type', 'income')->sum('amount');
+        $expense = $expenseQuery->where('type', 'expense')->sum('amount');
+        $balanceIncome = $balanceIncomeQuery->where('type', 'income')->sum('amount');
+        $balanceExpense = $balanceExpenseQuery->where('type', 'expense')->sum('amount');
 
         return [
             'income' => $income,
             'expense' => $expense,
-            'balance' => $income - $expense,
+            'balance' => $balanceIncome - $balanceExpense,
             'month_label' => $date->translatedFormat('F \d\e Y'),
         ];
     }

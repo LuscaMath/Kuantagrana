@@ -37,26 +37,26 @@
                             Vale das Moedas
                         </h1>
                         <p class="mt-4 max-w-2xl text-sm font-bold leading-7 sm:mt-5 sm:text-lg sm:leading-8">
-                            Um sistema web responsivo para gestão financeira pessoal com gamificação, pensado para jovens adultos e ambientado em um mapa com Casa, Escola, Mercado, Farmácia e Parque de Diversões.
+                            Um sistema web para organizacao financeira pessoal com gamificacao, estruturado em ambientes que ajudam o usuario a registrar gastos, aprender melhor e evoluir com constancia.
                         </p>
 
                         <div class="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2">
                             <div class="pixel-card">
-                                <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Controle</p>
-                                <p class="mt-3 text-sm font-bold leading-6">Receitas, despesas, metas e itens domésticos em um fluxo simples.</p>
+                                <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Casa e Rotina</p>
+                                <p class="mt-3 text-sm font-bold leading-6">A Casa concentra receitas e despesas, enquanto Mercado e Farmacia registram gastos por contexto.</p>
                             </div>
                             <div class="pixel-card">
-                                <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Gamificação</p>
-                                <p class="mt-3 text-sm font-bold leading-6">Pontos, níveis, desafios e conquistas para incentivar constância.</p>
+                                <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Aprendizado e Progresso</p>
+                                <p class="mt-3 text-sm font-bold leading-6">A Escola oferece dicas financeiras e o Parque transforma metas e constancia em progresso gamificado.</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="pixel-card pixel-scene flex min-h-[300px] flex-col justify-between sm:min-h-[360px]">
                         <div>
-                            <h2 class="mt-4 text-xl leading-relaxed sm:mt-5 sm:text-2xl">Direção inspirada em pixel art</h2>
+                            <h2 class="mt-4 text-xl leading-relaxed sm:mt-5 sm:text-2xl">Um mapa para decidir melhor</h2>
                             <p class="mt-4 text-sm font-bold leading-6 sm:text-base sm:leading-7">
-                                A autenticação já está pronta com Laravel Breeze, mas o layout foi ajustado para uma identidade mais lúdica, acolhedora e próxima do universo do Stardew Valley.
+                                Cada ambiente tem um papel proprio: a Casa organiza a visao financeira principal, a Escola orienta, Mercado e Farmacia registram despesas do dia a dia e o Parque concentra metas, progresso e recompensas.
                             </p>
                         </div>
 
@@ -64,7 +64,7 @@
                             <div class="border-4 p-3 text-center text-xs font-extrabold uppercase" style="border-color: var(--vm-border); background-color: #fffdf2;">Casa</div>
                             <div class="border-4 p-3 text-center text-xs font-extrabold uppercase" style="border-color: var(--vm-border); background-color: #fffdf2;">Escola</div>
                             <div class="border-4 p-3 text-center text-xs font-extrabold uppercase" style="border-color: var(--vm-border); background-color: #fffdf2;">Mercado</div>
-                            <div class="border-4 p-3 text-center text-xs font-extrabold uppercase" style="border-color: var(--vm-border); background-color: #fffdf2;">Farmácia</div>
+                            <div class="border-4 p-3 text-center text-xs font-extrabold uppercase" style="border-color: var(--vm-border); background-color: #fffdf2;">Farmacia</div>
                             <div class="border-4 p-3 text-center text-xs font-extrabold uppercase sm:col-span-2" style="border-color: var(--vm-border); background-color: #fffdf2;">Parque</div>
                         </div>
                     </div>

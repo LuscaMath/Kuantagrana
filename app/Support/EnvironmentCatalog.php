@@ -37,11 +37,11 @@ class EnvironmentCatalog
         return [
             'casa' => [
                 'kind' => 'home',
-                'capabilities' => ['transactions', 'items', 'income_transactions'],
+                'capabilities' => ['transactions', 'income_transactions'],
                 'highlights' => [
                     'title' => 'Centro financeiro da rotina',
-                    'description' => 'A Casa concentra receitas, contas fixas, despesas da base da vida financeira e itens domesticos.',
-                    'focus' => ['Receitas', 'Contas da casa', 'Itens domesticos'],
+                    'description' => 'A Casa e a base do controle financeiro: concentra entradas, contas fixas, despesas da rotina e a visao mais completa da vida financeira.',
+                    'focus' => ['Receitas', 'Despesas', 'Contas da casa'],
                     'kind' => 'home',
                 ],
                 'theme' => [
@@ -54,8 +54,8 @@ class EnvironmentCatalog
                 'capabilities' => ['education'],
                 'highlights' => [
                     'title' => 'Educacao financeira e orientacao',
-                    'description' => 'A Escola existe para aprender: dicas, conceitos e apoio para tomar decisoes financeiras melhores.',
-                    'focus' => ['Dicas financeiras', 'Planejamento', 'Aprendizado'],
+                    'description' => 'A Escola existe para aprender melhor antes de agir, com dicas e orientacoes para tomar decisoes financeiras mais conscientes.',
+                    'focus' => ['Dicas financeiras', 'Orientacao', 'Aprendizado'],
                     'kind' => 'educational',
                 ],
                 'theme' => [
@@ -65,11 +65,11 @@ class EnvironmentCatalog
             ],
             'mercado' => [
                 'kind' => 'operational',
-                'capabilities' => ['transactions', 'items'],
+                'capabilities' => ['transactions'],
                 'highlights' => [
                     'title' => 'Compras e alimentacao',
-                    'description' => 'Use este espaco para organizar despesas com mercado, alimentacao e reposicao do mes.',
-                    'focus' => ['Compras do mes', 'Alimentacao', 'Reposicao'],
+                    'description' => 'Use este ambiente para registrar gastos de mercado, compras do mes e despesas ligadas a alimentacao e reposicao.',
+                    'focus' => ['Compras do mes', 'Despesas do mercado', 'Reposicao'],
                     'kind' => 'operational',
                 ],
                 'theme' => [
@@ -79,11 +79,11 @@ class EnvironmentCatalog
             ],
             'farmacia' => [
                 'kind' => 'operational',
-                'capabilities' => ['transactions', 'items'],
+                'capabilities' => ['transactions'],
                 'highlights' => [
                     'title' => 'Saude e higiene',
-                    'description' => 'Concentre aqui remedios, higiene pessoal e outros gastos essenciais de cuidado.',
-                    'focus' => ['Saude', 'Higiene', 'Essenciais'],
+                    'description' => 'Concentre aqui gastos com saude, higiene pessoal, remedios e outros cuidados essenciais do dia a dia.',
+                    'focus' => ['Saude', 'Higiene', 'Gastos essenciais'],
                     'kind' => 'operational',
                 ],
                 'theme' => [
@@ -96,8 +96,8 @@ class EnvironmentCatalog
                 'capabilities' => ['goals'],
                 'highlights' => [
                     'title' => 'Metas, recompensas e evolucao',
-                    'description' => 'O Parque e o espaco das metas, do progresso e da parte ludica do sistema.',
-                    'focus' => ['Metas', 'Conquistas', 'Desafios'],
+                    'description' => 'O Parque e o espaco das metas, do progresso acumulado e da camada de recompensa da jornada.',
+                    'focus' => ['Metas', 'Progresso', 'Conquistas'],
                     'kind' => 'gamified',
                 ],
                 'theme' => [

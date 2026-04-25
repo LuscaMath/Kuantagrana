@@ -47,7 +47,6 @@ class GamificationService
             'transactions_created' => $user->financialTransactions()->count(),
             'goals_created' => $user->goals()->count(),
             'goals_completed' => $user->goals()->where('status', 'completed')->count(),
-            'household_items_created' => $user->householdItems()->count(),
             default => 0,
         };
 
@@ -101,7 +100,6 @@ class GamificationService
             'transactions_created' => $progress >= 1 ? 'primeiro-registro' : null,
             'goals_created' => $progress >= 1 ? 'sonho-em-andamento' : null,
             'goals_completed' => $progress >= 1 ? 'meta-concluida' : null,
-            'household_items_created' => $progress >= 1 ? 'casa-organizada' : null,
             default => null,
         };
 

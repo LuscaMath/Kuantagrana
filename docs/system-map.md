@@ -8,7 +8,7 @@ The product is organized around environments, not around isolated modules.
 Main user hubs:
 
 - `mapa`: primary entry point and contextual navigation layer
-- `dashboard`: consolidated overview of progress, balance, goals, alerts, achievements and challenges
+- `dashboard`: consolidated overview of progress, balance, goals, achievements and challenges
 - environment pages: the place where the user decides what action makes sense in that context
 
 Global modules still exist, but they now behave mainly as shortcuts into environment-centered flows.
@@ -25,8 +25,8 @@ The system is built around this idea:
 This means:
 
 - transactions belong to operational environments
-- items belong to operational environments
 - goals belong to the park environment
+- tips belong to educational and contextual experiences
 - the dashboard summarizes progress, but it is no longer the main decision surface
 
 ## Application layers
@@ -38,7 +38,6 @@ This means:
 - `EnvironmentController`: serves the environment map and each environment page
 - `FinancialTransactionController`: environment-guided transaction flow
 - `GoalController`: park-centered goal flow
-- `HouseholdItemController`: environment-guided item flow
 
 ### Business services
 
@@ -46,17 +45,15 @@ This means:
 - `EnvironmentExperienceService`: builds map cards and environment pages
 - `FinancialTransactionService`: listing, summaries and transaction lifecycle
 - `GoalService`: goal lifecycle and contributions
-- `HouseholdItemService`: item lifecycle
 - `GamificationService`: points, levels, achievements and challenges
 
 ### Domain models
 
-- `User`: central actor with relations to transactions, goals, items, achievements, challenges and level
+- `User`: central actor with relations to transactions, goals, achievements, challenges and level
 - `Environment`: contextual anchor for the experience
 - `FinancialTransaction`: money movement linked to user, category and environment
 - `Goal`: objective linked to user and environment
 - `GoalContribution`: contribution records for a goal
-- `HouseholdItem`: stock or routine item linked to user and environment
 - `Category`: transaction classification
 - `Level`: progression tier
 - `Achievement` and `UserAchievement`: one-time unlockables
@@ -67,13 +64,13 @@ This means:
 
 Environment capabilities are centralized in `app/Support/EnvironmentCatalog.php`.
 
-| Environment | Purpose | Transactions | Items | Goals | Experience note |
-| --- | --- | --- | --- | --- | --- |
-| `casa` | base routine and core finances | yes | yes | no | only place that accepts income transactions |
-| `escola` | education and orientation | no | no | no | content and learning environment |
-| `mercado` | shopping and food routine | yes | yes | no | operational environment |
-| `farmacia` | health and hygiene routine | yes | yes | no | operational environment |
-| `parque-de-diversoes` | goals, rewards and progression | no | no | yes | native home for goals |
+| Environment | Purpose | Transactions | Goals | Experience note |
+| --- | --- | --- | --- | --- |
+| `casa` | base routine and core finances | yes | no | only place that accepts income transactions |
+| `escola` | education and orientation | no | no | content and learning environment |
+| `mercado` | shopping and food routine | yes | no | operational environment |
+| `farmacia` | health and hygiene routine | yes | no | operational environment |
+| `parque-de-diversoes` | goals, rewards and progression | no | yes | native home for goals |
 
 ## Navigation model
 
@@ -88,7 +85,6 @@ These are the main entry points the UI now emphasizes.
 
 - `Transacoes`
 - `Metas`
-- `Itens`
 
 These exist as shortcuts, but no longer represent fully independent product centers.
 
@@ -110,14 +106,7 @@ These exist as shortcuts, but no longer represent fully independent product cent
 4. Validation enforces environment capability, category consistency and income restriction to `Casa`.
 5. After create, edit or delete, the user returns to the transaction list for that same environment.
 
-### 3. Item flow
-
-1. User chooses `Casa`, `Mercado` or `Farmacia`.
-2. User opens the item list or create form from that environment.
-3. The environment is locked into the form context.
-4. After create, edit or delete, the user returns to the item list for that same environment.
-
-### 4. Goal flow
+### 3. Goal flow
 
 1. User enters `Parque de Diversoes`.
 2. The park becomes the native context for listing, creating and editing goals.
@@ -125,10 +114,10 @@ These exist as shortcuts, but no longer represent fully independent product cent
 4. When the current amount reaches the target amount, the goal is completed automatically.
 5. All goal flow returns stay anchored to the park context.
 
-### 5. Dashboard flow
+### 4. Dashboard flow
 
 1. The dashboard aggregates progress from every environment.
-2. It highlights level, points, monthly balance, active goals, low stock items, achievements and challenges.
+2. It highlights level, points, monthly balance, goals, achievements and challenges.
 3. Its CTAs encourage the user to go into the map or directly into a meaningful environment such as `Casa` or `Parque`.
 
 ## Data relationships
@@ -138,11 +127,10 @@ Core relationship chain:
 - `User -> hasMany -> FinancialTransaction`
 - `User -> hasMany -> Goal`
 - `Goal -> hasMany -> GoalContribution`
-- `User -> hasMany -> HouseholdItem`
 - `User -> belongsTo -> Level`
 - `User -> hasMany -> UserAchievement -> belongsTo -> Achievement`
 - `User -> hasMany -> UserChallenge -> belongsTo -> Challenge`
-- `Environment -> hasMany -> Category, FinancialTransaction, Goal, HouseholdItem, Achievement, Challenge, Tip`
+- `Environment -> hasMany -> Category, FinancialTransaction, Goal, Achievement, Challenge, Tip`
 
 ## Architectural note
 

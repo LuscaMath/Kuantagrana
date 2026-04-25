@@ -49,11 +49,6 @@ class User extends Authenticatable
         return $this->hasMany(Goal::class);
     }
 
-    public function householdItems(): HasMany
-    {
-        return $this->hasMany(HouseholdItem::class);
-    }
-
     public function userAchievements(): HasMany
     {
         return $this->hasMany(UserAchievement::class);

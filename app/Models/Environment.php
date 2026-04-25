@@ -44,11 +44,6 @@ class Environment extends Model
         return $this->hasMany(Goal::class);
     }
 
-    public function householdItems(): HasMany
-    {
-        return $this->hasMany(HouseholdItem::class);
-    }
-
     public function achievements(): HasMany
     {
         return $this->hasMany(Achievement::class);

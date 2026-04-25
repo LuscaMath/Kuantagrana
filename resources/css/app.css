@@ -319,4 +319,30 @@
             linear-gradient(180deg, transparent 0 52%, #ca7d4f 52% 60%, transparent 60% 66%, #ca7d4f 66% 74%, transparent 74% 100%),
             linear-gradient(180deg, transparent 0 74%, #7dcf79 74% 100%);
     }
+
+    .map-special-section {
+        position: relative;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 12% 18%, rgba(142, 208, 255, 0.28) 0 10%, transparent 11%),
+            radial-gradient(circle at 88% 16%, rgba(240, 180, 41, 0.24) 0 8%, transparent 9%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0 60%, rgba(255, 248, 221, 0.82) 60% 100%);
+    }
+
+    .map-special-section::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.75;
+        background-image:
+            linear-gradient(rgba(61, 43, 31, 0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(61, 43, 31, 0.06) 1px, transparent 1px);
+        background-size: 20px 20px;
+    }
+
+    .map-special-section > * {
+        position: relative;
+        z-index: 1;
+    }
 }

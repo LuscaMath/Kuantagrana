@@ -61,17 +61,26 @@
                     <div class="pixel-stat">
                         <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Receitas</p>
                         <p class="mt-2 text-2xl font-extrabold">R$ {{ number_format($summary['income'], 2, ',', '.') }}</p>
+                        <p class="mt-1 text-sm font-bold text-[color:var(--vm-wood)]">
+                            {{ $selectedEnvironment->supportsFeature('income_transactions') ? 'Receitas da base financeira do mes' : 'Receitas de referencia da base financeira' }}
+                        </p>
                     </div>
 
                     <div class="pixel-stat">
                         <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Despesas</p>
                         <p class="mt-2 text-2xl font-extrabold">R$ {{ number_format($summary['expense'], 2, ',', '.') }}</p>
+                        <p class="mt-1 text-sm font-bold text-[color:var(--vm-wood)]">
+                            Despesas registradas em {{ $selectedEnvironment->name }}
+                        </p>
                     </div>
 
                     <div class="pixel-stat">
-                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Saldo do mes</p>
+                        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[color:var(--vm-wood)]">Saldo geral do mes</p>
                         <p class="mt-2 text-2xl font-extrabold">R$ {{ number_format($summary['balance'], 2, ',', '.') }}</p>
                         <p class="mt-1 text-sm font-bold text-[color:var(--vm-wood)]">{{ $summary['month_label'] }}</p>
+                        <p class="mt-1 text-sm font-bold text-[color:var(--vm-wood)]">
+                            Considera receitas da base financeira e despesas de Casa, Mercado e Farmacia.
+                        </p>
                     </div>
                 </section>
 
