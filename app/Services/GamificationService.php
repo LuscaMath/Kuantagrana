@@ -8,10 +8,90 @@ use App\Models\Level;
 use App\Models\UserAchievement;
 use App\Models\UserChallenge;
 use App\Models\User;
+use Illuminate\Session\Store;
 use Illuminate\Support\Carbon;
 
 class GamificationService
 {
+    public function snapshot(User $user): array
+    {
+        $user->loadMissing(['level', 'userAchievements.achievement', 'userChallenges.challenge']);
+
+        return [
+            'points' => $user->points,
+            'level_id' => $user->level_id,
+            'level_name' => $user->level?->name,
+            'achievement_ids' => $user->userAchievements->pluck('achievement_id')->all(),
+            'completed_challenge_ids' => $user->userChallenges
+                ->where('status', 'completed')
+                ->pluck('challenge_id')
+                ->all(),
+        ];
+    }
+
+    public function buildFeedback(User $user, array $snapshot, ?string $contextMessage = null): array
+    {
+        $user->refresh();
+        $user->loadMissing(['level', 'userAchievements.achievement', 'userChallenges.challenge']);
+
+        $feedback = [];
+        $pointsGained = max(0, $user->points - ($snapshot['points'] ?? 0));
+
+        if ($pointsGained > 0) {
+            $feedback[] = [
+                'type' => 'points',
+                'title' => "+{$pointsGained} pontos",
+                'body' => $contextMessage ?? 'Seu progresso foi atualizado.',
+            ];
+        }
+
+        if (($snapshot['level_id'] ?? null) !== $user->level_id && $user->level) {
+            $feedback[] = [
+                'type' => 'level',
+                'title' => 'Nivel alcancado',
+                'body' => "Voce chegou ao nivel {$user->level->name}.",
+            ];
+        }
+
+        $newAchievements = $user->userAchievements
+            ->whereNotIn('achievement_id', $snapshot['achievement_ids'] ?? [])
+            ->filter(fn (UserAchievement $achievement) => $achievement->achievement !== null)
+            ->values();
+
+        foreach ($newAchievements as $achievement) {
+            $feedback[] = [
+                'type' => 'achievement',
+                'title' => 'Conquista desbloqueada',
+                'body' => $achievement->achievement->name,
+            ];
+        }
+
+        $newCompletedChallenges = $user->userChallenges
+            ->where('status', 'completed')
+            ->whereNotIn('challenge_id', $snapshot['completed_challenge_ids'] ?? [])
+            ->filter(fn (UserChallenge $challenge) => $challenge->challenge !== null)
+            ->values();
+
+        foreach ($newCompletedChallenges as $challenge) {
+            $feedback[] = [
+                'type' => 'challenge',
+                'title' => 'Quest concluida',
+                'body' => $challenge->challenge->name,
+            ];
+        }
+
+        return $feedback;
+    }
+
+    public function flashFeedback(Store $session, User $user, array $snapshot, ?string $contextMessage = null): void
+    {
+        $feedback = $this->buildFeedback($user, $snapshot, $contextMessage);
+
+        if ($feedback !== []) {
+            $session->flash('gamification_feedback', $feedback);
+        }
+    }
+
     public function awardPoints(User $user, int $points): void
     {
         if ($points <= 0) {

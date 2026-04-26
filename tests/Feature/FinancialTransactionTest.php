@@ -164,6 +164,30 @@ it('uses all operational expenses in market monthly balance summary', function (
     expect((float) $summary['balance'])->toBe(1100.0);
 });
 
+it('shows gamification feedback after creating a transaction', function () {
+    $user = User::factory()->create(['points' => 0]);
+    $category = Category::query()->where('type', 'expense')->firstOrFail();
+
+    $response = $this
+        ->actingAs($user)
+        ->followingRedirects()
+        ->post(route('financial-transactions.store'), [
+            'environment_id' => $category->environment_id,
+            'category_id' => $category->id,
+            'type' => 'expense',
+            'title' => 'Primeiro registro',
+            'amount' => 50,
+            'transaction_date' => now()->toDateString(),
+            'is_completed' => true,
+            'is_recurring' => false,
+        ]);
+
+    $response->assertOk();
+    $response->assertSee('Conquista desbloqueada');
+    $response->assertSee('Primeiro Registro');
+    $response->assertSee('+30 pontos');
+});
+
 it('explains that monthly balance is consolidated on the market transactions page', function () {
     $user = User::factory()->create();
     $market = Environment::query()->where('slug', 'mercado')->firstOrFail();

@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Environment;
 use App\Models\FinancialTransaction;
 use App\Services\FinancialTransactionService;
+use App\Services\GamificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -16,6 +17,7 @@ class FinancialTransactionController extends Controller
 {
     public function __construct(
         private readonly FinancialTransactionService $financialTransactionService,
+        private readonly GamificationService $gamificationService,
     ) {
     }
 
@@ -74,8 +76,10 @@ class FinancialTransactionController extends Controller
     public function store(StoreFinancialTransactionRequest $request): RedirectResponse
     {
         $this->ensureEnvironmentSupportsTransactions($request->input('environment_id'));
+        $snapshot = $this->gamificationService->snapshot($request->user());
 
         $transaction = $this->financialTransactionService->create($request->user(), $request->validated());
+        $this->gamificationService->flashFeedback($request->session(), $request->user(), $snapshot, 'Transacao registrada com sucesso.');
 
         return redirect()
             ->route('financial-transactions.index', ['environment_id' => $transaction->environment_id])

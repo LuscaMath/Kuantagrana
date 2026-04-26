@@ -7,6 +7,7 @@ use App\Http\Requests\StoreGoalRequest;
 use App\Http\Requests\UpdateGoalRequest;
 use App\Models\Environment;
 use App\Models\Goal;
+use App\Services\GamificationService;
 use App\Services\GoalService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ class GoalController extends Controller
 {
     public function __construct(
         private readonly GoalService $goalService,
+        private readonly GamificationService $gamificationService,
     ) {
     }
 
@@ -61,7 +63,9 @@ class GoalController extends Controller
     public function store(StoreGoalRequest $request): RedirectResponse
     {
         $this->ensureEnvironmentSupportsGoals($request->input('environment_id'));
+        $snapshot = $this->gamificationService->snapshot($request->user());
         $goal = $this->goalService->create($request->user(), $request->validated());
+        $this->gamificationService->flashFeedback($request->session(), $request->user(), $snapshot, 'Meta criada com sucesso.');
 
         return redirect()
             ->route('goals.index', ['environment_id' => $goal->environment_id])
@@ -83,8 +87,10 @@ class GoalController extends Controller
     {
         abort_if($goal->user_id !== $request->user()->id, 403);
         $this->ensureEnvironmentSupportsGoals($request->input('environment_id'));
+        $snapshot = $this->gamificationService->snapshot($request->user());
 
         $goal = $this->goalService->update($goal, $request->validated());
+        $this->gamificationService->flashFeedback($request->session(), $request->user(), $snapshot, 'Meta atualizada com sucesso.');
 
         return redirect()
             ->route('goals.index', ['environment_id' => $goal->environment_id])
@@ -106,8 +112,10 @@ class GoalController extends Controller
     public function storeContribution(StoreGoalContributionRequest $request, Goal $goal): RedirectResponse
     {
         abort_if($goal->user_id !== $request->user()->id, 403);
+        $snapshot = $this->gamificationService->snapshot($request->user());
 
         $this->goalService->addContribution($goal, $request->validated());
+        $this->gamificationService->flashFeedback($request->session(), $request->user(), $snapshot, 'Contribuicao registrada com sucesso.');
 
         return redirect()
             ->route('goals.edit', $goal)

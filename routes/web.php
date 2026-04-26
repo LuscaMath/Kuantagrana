@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnvironmentController;
 use App\Http\Controllers\FinancialTransactionController;
 use App\Http\Controllers\GoalController;
+use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,8 @@ Route::get('/dashboard', DashboardController::class)
 Route::middleware('auth')->group(function () {
     Route::get('mapa', [EnvironmentController::class, 'index'])->name('environments.index');
     Route::get('ambientes/{slug}', [EnvironmentController::class, 'show'])->name('environments.show');
+    Route::get('tutorial', [OnboardingController::class, 'show'])->name('onboarding.show');
+    Route::post('tutorial/dismiss', [OnboardingController::class, 'dismiss'])->name('onboarding.dismiss');
 
     Route::resource('financial-transactions', FinancialTransactionController::class)
         ->except('show');
