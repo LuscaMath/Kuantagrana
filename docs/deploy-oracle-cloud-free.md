@@ -263,7 +263,7 @@ C:\ssh\oracle.key
 5. Rode o comando abaixo, trocando o caminho da chave e o IP:
 
 ```bash
-ssh -i "C:\ssh\oracle.key" ubuntu@IP_PUBLICO
+ssh -i "C:\ssh\oracle.key" ubuntu@167.234.255.247
 ```
 
 Se for a primeira conexao, o Windows pode perguntar se voce confia no host. Digite:
@@ -458,8 +458,9 @@ php artisan db:seed --force
 ## 12. Ajustar permissoes
 
 ```bash
+sudo chown -R ubuntu:ubuntu /var/www/kuantagrana
 cd /var/www/kuantagrana
-sudo chown -R ubuntu:www-data storage bootstrap/cache
+sudo chgrp -R www-data storage bootstrap/cache database
 sudo find storage -type d -exec chmod 775 {} \;
 sudo find storage -type f -exec chmod 664 {} \;
 sudo find bootstrap/cache -type d -exec chmod 775 {} \;
@@ -475,7 +476,16 @@ The stream or file "/var/www/kuantagrana/storage/logs/laravel.log" could not be 
 file_put_contents(/var/www/kuantagrana/bootstrap/cache/config.php): Failed to open stream: Permission denied
 ```
 
-Se voce for atualizar o codigo via `git pull` com seu usuario, essa abordagem costuma ser melhor do que entregar a posse do projeto inteiro para `www-data`.
+Esse modelo tambem evita erro como:
+
+```text
+error: cannot open '.git/FETCH_HEAD': Permission denied
+```
+
+Porque:
+
+- o codigo e a pasta `.git` ficam com o usuario `ubuntu`
+- o Laravel continua podendo escrever em `storage`, `bootstrap/cache` e `database`
 
 ## 13. Configurar o Nginx
 
@@ -562,11 +572,60 @@ php artisan tinker --execute="dump(config('app.url'));"
 
 ## 15. Configurar HTTPS
 
-Se ja tiver dominio apontando para o IP da VM:
+Quando o dominio e o `www` ja estiverem apontando para o IP da VM:
+
+1. ajuste o `.env`
+
+```bash
+cd /var/www/kuantagrana
+nano .env
+```
+
+Exemplo:
+
+```env
+APP_URL=http://kuantagrana.com.br
+```
+
+2. aplique a configuracao
+
+```bash
+php artisan optimize:clear
+php artisan config:cache
+```
+
+3. ajuste o `server_name` no Nginx para atender os dois hosts
+
+```nginx
+server_name kuantagrana.com.br www.kuantagrana.com.br;
+```
+
+4. teste e recarregue o Nginx
+
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+5. confirme se os dois nomes resolvem para o IP da VM
+
+```bash
+getent hosts kuantagrana.com.br
+getent hosts www.kuantagrana.com.br
+```
+
+Ou no Windows:
+
+```powershell
+nslookup kuantagrana.com.br
+nslookup www.kuantagrana.com.br
+```
+
+6. instale e rode o Certbot
 
 ```bash
 sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d seu-dominio.com -d www.seu-dominio.com
+sudo certbot --nginx -d kuantagrana.com.br -d www.kuantagrana.com.br
 ```
 
 Se ainda nao tiver dominio, pode pular essa etapa por enquanto.
@@ -577,12 +636,41 @@ Nesse caso:
 - teste o sistema pelo navegador usando o IP da VM
 - deixe o `HTTPS` para quando tiver um dominio apontado corretamente
 
+### O que escolher no Certbot
+
+Durante a execucao do Certbot:
+
+- informe seu e-mail
+- aceite os termos
+- se ele perguntar sobre redirecionar HTTP para HTTPS, escolha a opcao de redirecionar
+
+### Estado final aceitavel
+
+Se, no fim, estiver funcionando assim:
+
+- `https://kuantagrana.com.br`
+- `https://www.kuantagrana.com.br`
+
+entao isso ja esta bom e pronto para uso.
+
+Voce nao precisa obrigatoriamente fazer mais nada alem disso.
+
+### Opcional: escolher uma URL canonica
+
+Se quiser um acabamento mais profissional, depois voce pode escolher uma URL principal:
+
+- manter `kuantagrana.com.br` como principal e redirecionar `www`
+- ou manter `www.kuantagrana.com.br` como principal e redirecionar o dominio raiz
+
+Isso e opcional. Se os dois enderecos estiverem abrindo com HTTPS, o sistema ja esta corretamente publicado.
+
 ## 16. Atualizacao futura do sistema
 
 Quando voce fizer mudancas no projeto:
 
 ```bash
 cd /var/www/kuantagrana
+git stash push -m "backup antes do deploy"
 git pull origin main
 composer install --no-dev --optimize-autoloader
 npm install
@@ -594,6 +682,47 @@ php artisan route:cache
 php artisan view:cache
 sudo systemctl reload php8.3-fpm
 sudo systemctl reload nginx
+```
+
+### Quando basta fazer isso para as mudancas aparecerem
+
+Na pratica, sim: esse fluxo e o que faz as alteracoes aparecerem no sistema hospedado.
+
+O papel de cada etapa e:
+
+- `git pull`: traz o codigo novo
+- `composer install`: instala dependencias PHP novas, se houver
+- `npm install` e `npm run build`: atualizam os assets do frontend
+- `php artisan migrate --force`: aplica mudancas no banco
+- `optimize:clear` e os caches: garantem que o Laravel passe a usar a versao atual
+- `reload` dos servicos: finaliza a atualizacao com mais seguranca
+
+### Se o `git pull` reclamar de alteracoes locais
+
+Erro comum:
+
+```text
+Your local changes to the following files would be overwritten by merge
+```
+
+Se voce so quer guardar essas alteracoes e seguir com o deploy:
+
+```bash
+git stash push -m "backup antes do pull"
+git pull origin main
+```
+
+Para ver o que foi guardado:
+
+```bash
+git stash list
+```
+
+Se voce tiver certeza de que quer descartar as alteracoes locais de alguns arquivos:
+
+```bash
+git restore CAMINHO_DO_ARQUIVO
+git pull origin main
 ```
 
 ## 17. Firewall local da VM
@@ -657,6 +786,8 @@ Depois do deploy, valide:
 
 - a pagina inicial abre
 - o site abre pelo `IP publico` mesmo sem dominio
+- o site abre por `https://kuantagrana.com.br`
+- o site abre por `https://www.kuantagrana.com.br`
 - cadastro e login funcionam
 - `/up` responde
 - migrations e seeders rodaram
@@ -720,6 +851,15 @@ php artisan tinker --execute="dump(config('app.url'));"
 Isso normalmente significa que `storage/` ou `bootstrap/cache/` nao estao gravaveis.
 
 Refaca a etapa de permissoes do passo `12`.
+
+### O dominio abre, mas o Certbot falha
+
+Cheque nesta ordem:
+
+1. `kuantagrana.com.br` resolve para o IP da VM
+2. `www.kuantagrana.com.br` resolve para o IP da VM
+3. a porta `80` continua aberta na Oracle e no `iptables`
+4. o `server_name` inclui os dois hosts
 
 ## 21. Referencias oficiais usadas nesta versao do tutorial
 
