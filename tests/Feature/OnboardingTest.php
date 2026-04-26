@@ -14,6 +14,7 @@ test('onboarding tutorial is shown for users who have not dismissed it', functio
     $response->assertOk();
     $response->assertSee('Tutorial interativo');
     $response->assertSee('Como navegar pelo sistema');
+    $response->assertSee('@submit="open = false"', false);
 });
 
 test('users can dismiss onboarding and stop seeing it automatically', function () {
@@ -34,6 +35,17 @@ test('users can dismiss onboarding and stop seeing it automatically', function (
     $response->assertOk();
     $response->assertSee('open: false', false);
     $response->assertDontSee('open: true', false);
+});
+
+test('dismissing onboarding from the tutorial link removes the tutorial query flag', function () {
+    $user = User::factory()->create([
+        'onboarding_dismissed_at' => now(),
+    ]);
+
+    $this->actingAs($user)
+        ->from(route('dashboard', ['tutorial' => 1]))
+        ->post(route('onboarding.dismiss'))
+        ->assertRedirect(route('dashboard', [], false));
 });
 
 test('users can reopen the tutorial manually', function () {

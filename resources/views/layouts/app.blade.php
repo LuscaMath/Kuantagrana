@@ -121,7 +121,7 @@
                             </div>
 
                             <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                <form method="POST" action="{{ route('onboarding.dismiss') }}">
+                                <form method="POST" action="{{ route('onboarding.dismiss') }}" @submit="open = false">
                                     @csrf
                                     <button type="submit" class="pixel-btn pixel-btn-secondary w-full sm:w-auto">
                                         Pular por agora
@@ -137,7 +137,7 @@
                                         Proximo
                                     </button>
 
-                                    <form method="POST" action="{{ route('onboarding.dismiss') }}" x-show="step === steps - 1" style="display: none;">
+                                    <form method="POST" action="{{ route('onboarding.dismiss') }}" @submit="open = false" x-show="step === steps - 1" style="display: none;">
                                         @csrf
                                         <button type="submit" class="pixel-btn w-full sm:w-auto">
                                             Concluir tutorial

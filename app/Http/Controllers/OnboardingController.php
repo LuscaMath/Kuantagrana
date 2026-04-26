@@ -19,6 +19,39 @@ class OnboardingController extends Controller
             'onboarding_dismissed_at' => now(),
         ])->save();
 
-        return Redirect::back()->with('status', 'Tutorial ocultado. Voce pode reabrir quando quiser.');
+        $redirectUrl = $this->resolveRedirectUrl(url()->previous());
+
+        return Redirect::to($redirectUrl)->with('status', 'Tutorial ocultado. Voce pode reabrir quando quiser.');
+    }
+
+    private function resolveRedirectUrl(string $previousUrl): string
+    {
+        $parts = parse_url($previousUrl);
+
+        if ($parts === false || ! isset($parts['scheme'], $parts['host'])) {
+            return route('dashboard');
+        }
+
+        $query = [];
+
+        if (isset($parts['query'])) {
+            parse_str($parts['query'], $query);
+            unset($query['tutorial']);
+        }
+
+        $path = $parts['path'] ?? '';
+        $rebuiltUrl = $parts['scheme'].'://'.$parts['host'];
+
+        if (isset($parts['port'])) {
+            $rebuiltUrl .= ':'.$parts['port'];
+        }
+
+        $rebuiltUrl .= $path;
+
+        if ($query !== []) {
+            $rebuiltUrl .= '?'.http_build_query($query);
+        }
+
+        return $rebuiltUrl;
     }
 }
